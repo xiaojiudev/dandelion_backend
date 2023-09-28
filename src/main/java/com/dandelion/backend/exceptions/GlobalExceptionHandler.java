@@ -15,7 +15,7 @@ public class GlobalExceptionHandler {
     // Custom Exception Handler
 
     @ExceptionHandler(UserAlreadyExistsException.class)
-    public ResponseEntity<StandardError> userAlreadyExist(UserAlreadyExistsException e, HttpServletRequest request) {
+    public ResponseEntity<StandardError> userAlreadyExistsExceptionHandler(UserAlreadyExistsException e, HttpServletRequest request) {
         StandardError err = StandardError.builder()
                 .timeStamp(new Date())
                 .status(HttpStatus.CONFLICT.value())
@@ -28,7 +28,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<StandardError> userNotFound(UserNotFoundException e, HttpServletRequest request) {
+    public ResponseEntity<StandardError> userNotFoundExceptionHandler(UserNotFoundException e, HttpServletRequest request) {
         StandardError err = StandardError.builder()
                 .timeStamp(new Date())
                 .status(HttpStatus.NOT_FOUND.value())

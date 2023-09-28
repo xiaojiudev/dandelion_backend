@@ -1,4 +1,4 @@
-package com.dandelion.backend.payloads;
+package com.dandelion.backend.configs;
 
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;

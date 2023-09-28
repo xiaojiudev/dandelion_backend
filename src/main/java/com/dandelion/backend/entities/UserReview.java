@@ -64,5 +64,5 @@ public class UserReview {
     @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "user_id")
     @ToString.Exclude
-    private LocalUser localUser;
+    private User user;
 }

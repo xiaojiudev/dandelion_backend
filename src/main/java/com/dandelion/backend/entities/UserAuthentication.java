@@ -1,7 +1,6 @@
 package com.dandelion.backend.entities;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -32,7 +31,7 @@ public class UserAuthentication {
 
     @OneToOne(mappedBy = "userAuthentication", optional = false, orphanRemoval = true)
     @ToString.Exclude
-    private LocalUser user;
+    private User user;
 
     // One-to-One: User,
 

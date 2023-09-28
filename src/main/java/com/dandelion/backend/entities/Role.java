@@ -1,7 +1,6 @@
 package com.dandelion.backend.entities;
 
 import com.dandelion.backend.entities.enumType.RoleBase;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -30,7 +29,7 @@ public class Role {
     // Many-to-Many: with User table
     @ManyToMany(mappedBy = "roles")
     @ToString.Exclude
-    private List<LocalUser> localUsers = new ArrayList<>();
+    private List<User> users = new ArrayList<>();
 
 
 }

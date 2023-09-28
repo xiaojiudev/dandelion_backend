@@ -1,6 +1,5 @@
 package com.dandelion.backend.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -53,7 +52,7 @@ public class PaymentType {
     // Many-to-Many: with User table
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH}, mappedBy = "paymentTypes")
     @ToString.Exclude
-    private List<LocalUser> localUsers = new ArrayList<>();
+    private List<User> users = new ArrayList<>();
 
     @PrePersist
     private void beforeInsert() {

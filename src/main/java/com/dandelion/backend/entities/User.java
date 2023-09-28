@@ -21,7 +21,7 @@ import java.util.List;
 @Setter
 @ToString
 @Builder
-public class LocalUser {
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -89,7 +89,7 @@ public class LocalUser {
     private List<Role> roles = new ArrayList<>();
 
     // One-to-Many: with Address table
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "localUser")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     @ToString.Exclude
     @JsonManagedReference
     private List<Address> addresses = new ArrayList<>();
@@ -104,19 +104,19 @@ public class LocalUser {
     private List<Product> productsWishlist = new ArrayList<>();
 
     // One-to-Many with shopping_cart table
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "localUser")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     @ToString.Exclude
     @JsonProperty("shopping_cart")
     private List<ShoppingCart> shoppingCarts = new ArrayList<>();
 
     // One-to-Many with shop_oder table
-    @OneToMany(mappedBy = "localUser", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @ToString.Exclude
     @JsonProperty("shop_orders")
     private List<ShopOrder> shopOrders = new ArrayList<>();
 
     // One-to-Many with user_review table
-    @OneToMany(mappedBy = "localUser", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @ToString.Exclude
     private List<UserReview> userReviews = new ArrayList<>();
 

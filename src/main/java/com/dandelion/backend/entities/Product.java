@@ -1,6 +1,5 @@
 package com.dandelion.backend.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -49,7 +48,7 @@ public class Product {
     // Many-to-Many with User table - product_wishlist
     @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}, mappedBy = "productsWishlist")
     @ToString.Exclude
-    private List<LocalUser> localUsers = new ArrayList<>();
+    private List<User> users = new ArrayList<>();
 
     // Many-to-Many with Promotion table - promotion_product
     @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})

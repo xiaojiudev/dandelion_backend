@@ -1,4 +1,4 @@
-package com.dandelion.backend.service;
+package com.dandelion.backend.services;
 
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;

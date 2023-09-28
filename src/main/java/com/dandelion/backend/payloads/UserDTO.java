@@ -1,44 +1,43 @@
 package com.dandelion.backend.payloads;
 
 
-import com.dandelion.backend.entities.LocalUser;
 import com.dandelion.backend.entities.enumType.Gender;
+import com.dandelion.backend.utils.GenderDeserializer;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-import java.util.Date;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
+import lombok.*;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class UserDTO {
 
     private Long id;
 
+    @Email(message = "Email address is not valid!")
+    @NotEmpty(message = "Email is not empty!")
+    private String email;
+
+    @NotEmpty(message = "Phone is not empty!")
+    private String phone;
+
+    @NotEmpty
+    @Size(min = 8, max = 32, message = "Password must be min of 8 characters!")
+    private String password;
+
+    @NotEmpty
     @JsonProperty("full_name")
     private String fullName;
 
-    private String email;
-
-    private String phone;
-
+    @JsonDeserialize(using = GenderDeserializer.class)
     private Gender gender;
 
     private String avatar;
 
-    private Date blocked;
 
-    public UserDTO(LocalUser localUser) {
-        this.id = localUser.getId();
-        this.fullName = localUser.getFullName();
-        this.email = localUser.getEmail();
-        this.phone = localUser.getPhone();
-        this.gender = localUser.getGender();
-        this.avatar = localUser.getAvatar();
-        this.blocked = localUser.getBlocked();
-    }
 }

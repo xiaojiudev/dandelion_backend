@@ -1,4 +1,4 @@
-package com.dandelion.backend.config;
+package com.dandelion.backend.configs;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
