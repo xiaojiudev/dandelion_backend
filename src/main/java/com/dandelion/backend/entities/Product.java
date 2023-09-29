@@ -67,5 +67,5 @@ public class Product {
     @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "category_id")
     @ToString.Exclude
-    private ProductCategory productCategory;
+    private Category category;
 }

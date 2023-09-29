@@ -1,6 +1,5 @@
 package com.dandelion.backend.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
@@ -73,7 +72,6 @@ public class Address {
     @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "user_id")
     @ToString.Exclude
-    @JsonBackReference
     private User user;
 
 

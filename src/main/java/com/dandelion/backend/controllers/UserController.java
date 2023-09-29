@@ -21,23 +21,8 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    //     GET a list of users
-    @GetMapping("/users")
-    public ResponseEntity<List<UserDTO>> getAllUsers() {
-//        return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.ACCEPTED);
-
-        return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
-    }
-
-    // GET a user
-    @GetMapping("/users/{userId}")
-    public ResponseEntity<UserDTO> getUserDetailsHandler(@PathVariable("userId") Long userId) {
-//        return new ResponseEntity<>(userService.getUserDetails(userId), HttpStatus.ACCEPTED);
-        return new ResponseEntity<>(userService.getUserById(userId), HttpStatus.OK);
-    }
 
     // POST - create user
-
     @PostMapping("/users")
     public ResponseEntity<UserDTO> createUser(@Valid @RequestBody UserDTO userDTO) {
         return new ResponseEntity<>(userService.createUser(userDTO), HttpStatus.CREATED);
@@ -55,7 +40,19 @@ public class UserController {
 
         userService.deleteUser(userId);
 
-        return new ResponseEntity<>(new ApiResponse("User deleted successfully", true), HttpStatus.OK);
+        return new ResponseEntity<>(new ApiResponse("User is deleted successfully", true), HttpStatus.OK);
+    }
+
+    //     GET a list of users
+    @GetMapping("/users")
+    public ResponseEntity<List<UserDTO>> getAllUsers() {
+        return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
+    }
+
+    // GET a user
+    @GetMapping("/users/{userId}")
+    public ResponseEntity<UserDTO> getUser(@PathVariable("userId") Long userId) {
+        return new ResponseEntity<>(userService.getUserById(userId), HttpStatus.OK);
     }
 
 }

@@ -28,7 +28,7 @@ public class Variation {
     @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "category_id")
     @ToString.Exclude
-    private ProductCategory productCategory;
+    private Category category;
 
     // One-to-Many with variation_option table
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "variation")

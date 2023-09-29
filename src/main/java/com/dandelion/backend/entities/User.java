@@ -2,7 +2,6 @@ package com.dandelion.backend.entities;
 
 import com.dandelion.backend.entities.enumType.Gender;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
@@ -91,7 +90,6 @@ public class User {
     // One-to-Many: with Address table
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     @ToString.Exclude
-    @JsonManagedReference
     private List<Address> addresses = new ArrayList<>();
 
     // Many-to-Many with Product table - product_wishlist

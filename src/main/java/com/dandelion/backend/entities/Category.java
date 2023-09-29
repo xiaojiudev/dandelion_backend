@@ -8,29 +8,29 @@ import java.util.List;
 
 
 @Entity
-@Table(name = "product_category")
+@Table(name = "category")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @ToString
 @Builder
-public class ProductCategory {
+public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "category_name", nullable = false, unique = true)
-    private String categoryName;
+    @Column(name = "name", nullable = false, unique = true)
+    private String name;
 
     // One-to-Many with product table
-    @OneToMany(mappedBy = "productCategory")
+    @OneToMany(mappedBy = "category")
     @ToString.Exclude
     private List<Product> products = new ArrayList<>();
 
     // One-to-Many with variation table
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "productCategory")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "category")
     @ToString.Exclude
     private List<Variation> variations = new ArrayList<>();
 }
