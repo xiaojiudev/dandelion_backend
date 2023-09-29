@@ -48,16 +48,16 @@ insert into `user_payment_method`(`user_id`, `payment_type_id`) values(3, 5);
 select * from `user_payment_method`;
 
 -- ADDRESS
-INSERT INTO `address` (`address_line_1`, `address_line_2`, `phone`, `city`, `district`, `ward`, `postal_code`, `country`) 
-	VALUES ('123 Nguyen Van A Street', 'Apartment 4B', '0123456789', 'Ho Chi Minh City', 'District 1', 'Phuong Tan Dinh', '700000', 'Viet Nam');
-INSERT INTO `address` (`address_line_1`, `address_line_2`, `phone`, `city`, `district`, `ward`, `postal_code`, `country`) 
-	VALUES ('456 Le Loi Avenue', NULL, '0987654321', 'Hanoi', 'Ba Dinh', 'Phuong Quoc Tu Giam', '100000', 'Viet Nam');
-INSERT INTO `address` (`address_line_1`, `address_line_2`, `phone`, `city`, `district`, `ward`, `postal_code`, `country`) 
-	VALUES ('789 Tran Hung Dao Street', NULL, '0771234567', 'Da Nang', 'Hai Chau', 'Phuong Hai Chau 1', '550000', 'Viet Nam');
-INSERT INTO `address` (`address_line_1`, `address_line_2`, `phone`, `city`, `district`, `ward`, `postal_code`, `country`) 
-	VALUES ('101 Vo Van Tan Road', 'Apartment 7C', '0909876543', 'Can Tho', 'Ninh Kieu', 'Phuong An Binh', '920000', 'Viet Nam');
-INSERT INTO `address` (`address_line_1`, `address_line_2`, `phone`, `city`, `district`, `ward`, `postal_code`, `country`) 
-	VALUES ('222 Tran Phu Street', NULL, '0881122334', 'Hue', 'Phuong Vinh Ninh', 'Phuong Ninh Phong', '530000', 'Viet Nam');
+INSERT INTO `address` (`user_id`, `address_line_1`, `address_line_2`, `phone`, `city`, `district`, `ward`, `postal_code`, `country`) 
+	VALUES (1, '123 Nguyen Van A Street', 'Apartment 4B', '0123456789', 'Ho Chi Minh City', 'District 1', 'Phuong Tan Dinh', '700000', 'Viet Nam');
+INSERT INTO `address` (`user_id`, `address_line_1`, `address_line_2`, `phone`, `city`, `district`, `ward`, `postal_code`, `country`) 
+	VALUES (1, '456 Le Loi Avenue', NULL, '0987654321', 'Hanoi', 'Ba Dinh', 'Phuong Quoc Tu Giam', '100000', 'Viet Nam');
+INSERT INTO `address` (`user_id`, `address_line_1`, `address_line_2`, `phone`, `city`, `district`, `ward`, `postal_code`, `country`) 
+	VALUES (2, '789 Tran Hung Dao Street', NULL, '0771234567', 'Da Nang', 'Hai Chau', 'Phuong Hai Chau 1', '550000', 'Viet Nam');
+INSERT INTO `address` (`user_id`, `address_line_1`, `address_line_2`, `phone`, `city`, `district`, `ward`, `postal_code`, `country`) 
+	VALUES (2, '101 Vo Van Tan Road', 'Apartment 7C', '0909876543', 'Can Tho', 'Ninh Kieu', 'Phuong An Binh', '920000', 'Viet Nam');
+INSERT INTO `address` (`user_id`, `address_line_1`, `address_line_2`, `phone`, `city`, `district`, `ward`, `postal_code`, `country`) 
+	VALUES (3, '222 Tran Phu Street', NULL, '0881122334', 'Hue', 'Phuong Vinh Ninh', 'Phuong Ninh Phong', '530000', 'Viet Nam');
 
 select * from `address`;
 
@@ -92,11 +92,11 @@ update `user` set `user_authentication_id`= 3  where `user`.id = 3;
 select * from `user`;
 
 -- PRODUCT CATEGORIES
-insert into `product_category`(`category_name`) values("Sneakers");
-insert into `product_category`(`category_name`) values("Sandals");
-insert into `product_category`(`category_name`) values("Boots");
+insert into `category`(`name`) values("Sneakers");
+insert into `category`(`name`) values("Sandals");
+insert into `category`(`name`) values("Boots");
 
-select * from `product_category`;
+select * from `category`;
 
 -- PRODUCT VARIATION
 insert into `variation`(`category_id`, `name`) values(1, "Size");

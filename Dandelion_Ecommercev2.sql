@@ -22,6 +22,7 @@ drop table if exists `address`;
 
 CREATE TABLE `address` (
   `id` bigint PRIMARY KEY AUTO_INCREMENT,
+  `user_id` bigint not null,
   `address_line_1` varchar(255) DEFAULT null,
   `address_line_2` varchar(255) DEFAULT null,
   `phone` varchar(20) DEFAULT null,
@@ -112,11 +113,11 @@ CREATE TABLE `product_item` (
   `modified_at` timestamp DEFAULT null
 ) engine=InnoDB default char set=utf8mb4;
 
-drop table if exists `product_category`;
+drop table if exists `category`;
 
-CREATE TABLE `product_category` (
+CREATE TABLE `category` (
   `id` bigint PRIMARY KEY AUTO_INCREMENT,
-  `category_name` varchar(255) unique NOT NULL
+  `name` varchar(255) unique NOT NULL
 ) engine=InnoDB default char set=utf8mb4;
 
 drop table if exists `variation`;
@@ -250,9 +251,7 @@ CREATE TABLE `promotion_product` (
 
 
 
-ALTER TABLE `user_address` ADD FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
-
-ALTER TABLE `user_address` ADD FOREIGN KEY (`address_id`) REFERENCES `address` (`id`);
+ALTER TABLE `address` ADD FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
 
 ALTER TABLE `user_payment_method` ADD FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
 
@@ -262,11 +261,11 @@ ALTER TABLE `user_role` ADD FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
 
 ALTER TABLE `user_role` ADD FOREIGN KEY (`role_id`) REFERENCES `role` (`id`);
 
-ALTER TABLE `product` ADD FOREIGN KEY (`category_id`) REFERENCES `product_category` (`id`);
+ALTER TABLE `product` ADD FOREIGN KEY (`category_id`) REFERENCES `category` (`id`);
 
 ALTER TABLE `product_item` ADD FOREIGN KEY (`product_id`) REFERENCES `product` (`id`);
 
-ALTER TABLE `variation` ADD FOREIGN KEY (`category_id`) REFERENCES `product_category` (`id`);
+ALTER TABLE `variation` ADD FOREIGN KEY (`category_id`) REFERENCES `category` (`id`);
 
 ALTER TABLE `variation_option` ADD FOREIGN KEY (`variation_id`) REFERENCES `variation` (`id`);
 
