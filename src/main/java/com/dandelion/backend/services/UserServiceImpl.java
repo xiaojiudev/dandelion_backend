@@ -1,8 +1,8 @@
 package com.dandelion.backend.services;
 
 import com.dandelion.backend.entities.User;
-import com.dandelion.backend.exceptions.UserAlreadyExistsException;
-import com.dandelion.backend.exceptions.UserNotFoundException;
+import com.dandelion.backend.exceptions.ResourceAlreadyExistsException;
+import com.dandelion.backend.exceptions.ResourceNotFoundException;
 import com.dandelion.backend.payloads.UserDTO;
 import com.dandelion.backend.repositories.UserRepo;
 import org.modelmapper.ModelMapper;
@@ -27,24 +27,24 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDTO createUser(UserDTO userDTO) {
 
-        User user = dtoToUser(userDTO);
+        User user = modelMapper.map(userDTO, User.class);
 
         Optional<User> tempUser = userRepo.findByEmailIgnoreCase(user.getEmail());
 
         if (tempUser.isPresent()) {
-            throw new UserAlreadyExistsException("User already exist with id = " + tempUser.get().getId());
+            throw new ResourceAlreadyExistsException("User already exist with id = " + tempUser.get().getId());
         }
 
         User savedUser = userRepo.save(user);
 
-        return userToDto(savedUser);
+        return modelMapper.map(savedUser, UserDTO.class);
     }
 
     @Override
     public UserDTO updateUser(Long userId, UserDTO userDTO) {
 
         User user = userRepo.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User not found with id = " + userId));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id = " + userId));
 
 
         user.setEmail(userDTO.getEmail());
@@ -56,16 +56,16 @@ public class UserServiceImpl implements UserService {
 
         User updatedUser = userRepo.save(user);
 
-        return userToDto(updatedUser);
+        return modelMapper.map(updatedUser, UserDTO.class);
     }
 
     @Override
     public UserDTO getUserById(Long userId) {
 
         User user = userRepo.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User not found with id = " + userId));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id = " + userId));
 
-        return userToDto(user);
+        return modelMapper.map(user, UserDTO.class);
     }
 
     @Override
@@ -73,7 +73,7 @@ public class UserServiceImpl implements UserService {
 
         List<User> users = userRepo.findAll();
 
-        List<UserDTO> userDTOS = users.stream().map(user -> userToDto(user)).collect(Collectors.toList());
+        List<UserDTO> userDTOS = users.stream().map(user -> modelMapper.map(user, UserDTO.class)).collect(Collectors.toList());
 
         return userDTOS;
     }
@@ -82,26 +82,11 @@ public class UserServiceImpl implements UserService {
     public void deleteUser(Long userId) {
 
         User user = userRepo.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User not found with id = " + userId));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id = " + userId));
 
         userRepo.delete(user);
 
 
     }
-
-    // Convert UserDTO => User
-    private User dtoToUser(UserDTO userDto) {
-
-        User user = modelMapper.map(userDto, User.class);
-
-        return user;
-    }
-
-    // Conver User => UserDTO
-    public UserDTO userToDto(User user) {
-
-        UserDTO userDTO = modelMapper.map(user, UserDTO.class);
-
-        return userDTO;
-    }
+    
 }
