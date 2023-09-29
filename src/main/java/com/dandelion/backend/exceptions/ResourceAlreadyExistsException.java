@@ -1,16 +1,16 @@
 package com.dandelion.backend.exceptions;
 
-public class UserAlreadyExistsException extends RuntimeException{
+public class ResourceAlreadyExistsException extends RuntimeException {
 
-    public UserAlreadyExistsException() {
+    public ResourceAlreadyExistsException() {
         super("User is already exists");
     }
 
-    public UserAlreadyExistsException(String msg) {
+    public ResourceAlreadyExistsException(String msg) {
         super(msg);
     }
 
-    public UserAlreadyExistsException(String msg, Throwable cause) {
+    public ResourceAlreadyExistsException(String msg, Throwable cause) {
         super(msg, cause);
     }
 }
