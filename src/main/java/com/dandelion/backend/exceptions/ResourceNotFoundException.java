@@ -1,8 +1,8 @@
 package com.dandelion.backend.exceptions;
 
-public class UserNotFoundException extends RuntimeException{
+public class UserNotFoundException extends RuntimeException {
     public UserNotFoundException() {
-        super("User not found");
+        super("Resource not found");
     }
 
     public UserNotFoundException(String msg) {
