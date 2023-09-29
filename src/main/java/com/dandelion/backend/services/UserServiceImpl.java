@@ -1,6 +1,7 @@
 package com.dandelion.backend.services;
 
 import com.dandelion.backend.entities.User;
+import com.dandelion.backend.exceptions.UserAlreadyExistsException;
 import com.dandelion.backend.exceptions.UserNotFoundException;
 import com.dandelion.backend.payloads.UserDTO;
 import com.dandelion.backend.repositories.UserRepo;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,6 +28,12 @@ public class UserServiceImpl implements UserService {
     public UserDTO createUser(UserDTO userDTO) {
 
         User user = dtoToUser(userDTO);
+
+        Optional<User> tempUser = userRepo.findByEmailIgnoreCase(user.getEmail());
+
+        if (tempUser.isPresent()) {
+            throw new UserAlreadyExistsException("User already exist with id = " + tempUser.get().getId());
+        }
 
         User savedUser = userRepo.save(user);
 
