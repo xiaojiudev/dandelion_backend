@@ -28,8 +28,8 @@ public class Product {
     private String name;
 
     @Lob
-    @Column(name = "desc", nullable = false)
-    private String desc;
+    @Column(name = "description", nullable = false)
+    private String description;
 
     @Lob
     @Column(name = "information", nullable = false)
