@@ -56,6 +56,15 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    public void deleteCategory(Long categoryId) {
+
+        Category cate = categoryRepo.findById(categoryId)
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found with id = " + categoryId));
+
+        categoryRepo.delete(cate);
+    }
+
+    @Override
     public CategoryDTO getCategoryById(Long categoryId) {
 
         Category cate = categoryRepo.findById(categoryId)
@@ -74,12 +83,5 @@ public class CategoryServiceImpl implements CategoryService {
         return cateDTOs;
     }
 
-    @Override
-    public void deleteCategory(Long categoryId) {
 
-        Category cate = categoryRepo.findById(categoryId)
-                .orElseThrow(() -> new ResourceNotFoundException("Category not found with id = " + categoryId));
-
-        categoryRepo.delete(cate);
-    }
 }
