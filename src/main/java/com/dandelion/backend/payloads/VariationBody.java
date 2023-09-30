@@ -1,5 +1,6 @@
 package com.dandelion.backend.payloads;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 @NoArgsConstructor
@@ -7,11 +8,12 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
-public class VariationDTO {
+public class VariationBody {
 
     private Long id;
 
-    private CategoryDTO category;
+    @JsonProperty("category_id")
+    private Long categoryId;
 
     private String name;
 

@@ -18,4 +18,5 @@ public class CategoryDTO {
     @Size(min = 1, max = 100, message = "Category name at least 1 characters")
     @JsonProperty(namespace = "name")
     private String name;
+
 }
