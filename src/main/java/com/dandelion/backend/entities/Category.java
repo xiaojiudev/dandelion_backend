@@ -25,7 +25,7 @@ public class Category {
     private String name;
 
     // One-to-Many with product table
-    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "category", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @ToString.Exclude
     private List<Product> products = new ArrayList<>();
 
