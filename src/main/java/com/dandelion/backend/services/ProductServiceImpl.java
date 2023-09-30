@@ -4,6 +4,7 @@ import com.dandelion.backend.entities.Category;
 import com.dandelion.backend.entities.Product;
 import com.dandelion.backend.exceptions.ResourceAlreadyExistsException;
 import com.dandelion.backend.exceptions.ResourceNotFoundException;
+import com.dandelion.backend.payloads.ProductBody;
 import com.dandelion.backend.payloads.ProductDTO;
 import com.dandelion.backend.repositories.CategoryRepo;
 import com.dandelion.backend.repositories.ProductRepo;
@@ -30,21 +31,21 @@ public class ProductServiceImpl implements ProductService {
     private ModelMapper modelMapper;
 
     @Override
-    public ProductDTO createProduct(ProductDTO productDTO) {
+    public ProductDTO createProduct(ProductBody productBody) {
 
         // check category exists
-        Category category = categoryRepo.findById(productDTO.getCategoryId())
-                .orElseThrow(() -> new ResourceNotFoundException("Category not found with id = " + productDTO.getCategoryId()));
+        Category category = categoryRepo.findById(productBody.getCategoryId())
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found: " + productBody.getCategoryId()));
 
         // check product name is available
-        Optional<Product> tempProduct = productRepo.findByNameIgnoreCase(productDTO.getName());
+        Optional<Product> tempProduct = productRepo.findByNameIgnoreCase(productBody.getName());
 
         if (tempProduct.isPresent()) {
-            throw new ResourceAlreadyExistsException("Product already exist with name = " + productDTO.getName());
+            throw new ResourceAlreadyExistsException("Product already exist with name = " + productBody.getName());
         }
 
         // convert into product
-        Product product = modelMapper.map(productDTO, Product.class);
+        Product product = modelMapper.map(productBody, Product.class);
 
         // set category for product
         product.setCategory(category);
@@ -55,22 +56,19 @@ public class ProductServiceImpl implements ProductService {
         // convert into DTO
         ProductDTO newProductDTO = modelMapper.map(newProduct, ProductDTO.class);
 
-        // set categoryId
-        newProductDTO.setCategoryId(productDTO.getCategoryId());
-
         return newProductDTO;
     }
 
     @Override
-    public ProductDTO updateProduct(Long productId, ProductDTO productDTO) {
+    public ProductDTO updateProduct(Long productId, ProductBody productBody) {
 
         // check product exist
         Product product = productRepo.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found with id = " + productId));
 
         // if update product_name check it available to use. Because product name is unique
-        if (!product.getName().equals(productDTO.getName())) {
-            Optional<Product> temp = productRepo.findByNameIgnoreCase(productDTO.getName());
+        if (!product.getName().equals(productBody.getName())) {
+            Optional<Product> temp = productRepo.findByNameIgnoreCase(productBody.getName());
 
             if (temp.isPresent()) {
                 throw new ResourceAlreadyExistsException("Product name already exist, choose a difference name!");
@@ -79,13 +77,13 @@ public class ProductServiceImpl implements ProductService {
         }
 
         // check category exist
-        Category category = categoryRepo.findById(productDTO.getCategoryId())
-                .orElseThrow(() -> new ResourceNotFoundException("Category not found with id = " + productDTO.getCategoryId()));
+        Category category = categoryRepo.findById(productBody.getCategoryId())
+                .orElseThrow(() -> new ResourceNotFoundException("Category id not found: " + productBody.getCategoryId()));
 
         // set properties
-        product.setName(productDTO.getName());
-        product.setDescription(productDTO.getDescription());
-        product.setInformation(productDTO.getInformation());
+        product.setName(productBody.getName());
+        product.setDescription(productBody.getDescription());
+        product.setInformation(productBody.getInformation());
         product.setCategory(category);
 
         // save
@@ -93,9 +91,6 @@ public class ProductServiceImpl implements ProductService {
 
         // convert into DTO
         ProductDTO updatedProductDTO = modelMapper.map(updatedProduct, ProductDTO.class);
-
-        // set categoryId for this DTO
-        updatedProductDTO.setCategoryId(productDTO.getCategoryId());
 
         return updatedProductDTO;
     }
@@ -116,12 +111,7 @@ public class ProductServiceImpl implements ProductService {
         List<Product> products = productRepo.findAll();
 
         List<ProductDTO> productDTOs = products.stream()
-                .map(item -> {
-                            ProductDTO productDTO = modelMapper.map(item, ProductDTO.class);
-                            productDTO.setCategoryId(item.getCategory().getId());
-                            return productDTO;
-                        }
-                )
+                .map(item -> modelMapper.map(item, ProductDTO.class))
                 .collect(Collectors.toList());
 
         return productDTOs;
@@ -135,29 +125,23 @@ public class ProductServiceImpl implements ProductService {
 
         ProductDTO productDTO = modelMapper.map(product, ProductDTO.class);
 
-        productDTO.setCategoryId(product.getCategory().getId());
-
         return productDTO;
     }
 
     @Override
-    public List<ProductDTO> getProductsByCategory(Long categoryId) {
+    public List<ProductDTO> getProductsByCategory(String category) {
 
-        Category category = categoryRepo.findById(categoryId)
-                .orElseThrow(() -> new ResourceNotFoundException("Category not found with id = " + categoryId));
+        Category tempCate = categoryRepo.findByNameIgnoreCase(category)
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found with id = " + category));
 
-        List<Product> products = productRepo.findAllByCategory(category);
+        List<Product> products = productRepo.findAllByCategory(tempCate);
 
         if (products.isEmpty()) {
             throw new ResourceNotFoundException("Product not found!");
         }
 
         List<ProductDTO> productDTOs = products.stream()
-                .map(item -> {
-                    ProductDTO productDTO = modelMapper.map(item, ProductDTO.class);
-                    productDTO.setCategoryId(item.getCategory().getId());
-                    return productDTO;
-                })
+                .map(item -> modelMapper.map(item, ProductDTO.class))
                 .collect(Collectors.toList());
 
         return productDTOs;
@@ -173,11 +157,7 @@ public class ProductServiceImpl implements ProductService {
         }
 
         List<ProductDTO> matchingProductsDTOs = matchingProducts.stream()
-                .map(item -> {
-                    ProductDTO productDTO = modelMapper.map(item, ProductDTO.class);
-                    productDTO.setCategoryId(item.getCategory().getId());
-                    return productDTO;
-                })
+                .map(item -> modelMapper.map(item, ProductDTO.class))
                 .collect(Collectors.toList());
 
         return matchingProductsDTOs;
