@@ -25,12 +25,12 @@ public class Category {
     private String name;
 
     // One-to-Many with product table
-    @OneToMany(mappedBy = "category")
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
     @ToString.Exclude
     private List<Product> products = new ArrayList<>();
 
     // One-to-Many with variation table
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "category")
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
     @ToString.Exclude
     private List<Variation> variations = new ArrayList<>();
 }
