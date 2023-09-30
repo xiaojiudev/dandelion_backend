@@ -125,7 +125,8 @@ drop table if exists `variation`;
 CREATE TABLE `variation` (
   `id` bigint PRIMARY KEY AUTO_INCREMENT,
   `category_id` bigint not null,
-  `name` varchar(255) NOT NULL
+  `name` varchar(255) NOT NULL,
+  unique key (`category_id`, `name`)
 ) engine=InnoDB default char set=utf8mb4;
 
 drop table if exists `variation_option`;
@@ -133,7 +134,8 @@ drop table if exists `variation_option`;
 CREATE TABLE `variation_option` (
   `id` bigint PRIMARY KEY AUTO_INCREMENT,
   `variation_id` bigint not null,
-  `value` varchar(255) NOT NULL
+  `value` varchar(255) NOT NULL,
+   unique key (`variation_id`, `value`)
 ) engine=InnoDB default char set=utf8mb4;
 
 drop table if exists `product_configuration`;
