@@ -94,7 +94,7 @@ CREATE TABLE `product` (
   `id` bigint PRIMARY KEY AUTO_INCREMENT,
   `category_id` bigint not null,
   `name` varchar(255) unique NOT NULL,
-  `desc` text NOT NULL,
+  `description` text NOT NULL,
   `information` longtext NOT NULL,
   `created_at` timestamp DEFAULT (now()),
   `modified_at` timestamp DEFAULT null

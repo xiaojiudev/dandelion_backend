@@ -120,12 +120,13 @@ insert into `variation_option`(`variation_id`, `value`) values (2,"Gray");
 select * from `variation_option`;
 
 -- PRODUCT
-insert into `product`(`category_id`, `name`, `desc`, `information`) 
+insert into `product`(`category_id`, `name`, `description`, `information`) 
 	values("1", "StreetStyle Classic Canvas Sneakers", "this is desc", " this is information"); 
-insert into `product`(`category_id`, `name`, `desc`, `information`) 
+insert into `product`(`category_id`, `name`, `description`, `information`) 
 	values("1", "EcoFlex Comfort Sneakers", "this is desc", " this is information"); 
 
 select * from `product`; 
+select * from `category`;
 
 -- PRODUCT ITEM 
 insert into `product_item`(`product_id`, `SKU`, `qty_in_stock`,  `price`, `img_url`) 
