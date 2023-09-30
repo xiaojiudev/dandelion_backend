@@ -33,7 +33,7 @@ public class VariationOption {
     private Variation variation;
 
     // Many-to-Many with product_item - product_configuration
-    @ManyToMany(mappedBy = "variationOptions")
+    @ManyToMany(mappedBy = "variationOptions", cascade = CascadeType.ALL)
     @ToString.Exclude
     private List<ProductItem> productItems = new ArrayList<>();
 }
