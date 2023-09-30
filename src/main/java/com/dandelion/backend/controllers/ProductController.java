@@ -2,6 +2,7 @@ package com.dandelion.backend.controllers;
 
 
 import com.dandelion.backend.payloads.ApiResponse;
+import com.dandelion.backend.payloads.ProductBody;
 import com.dandelion.backend.payloads.ProductDTO;
 import com.dandelion.backend.services.ProductService;
 import jakarta.validation.Valid;
@@ -23,14 +24,14 @@ public class ProductController {
 
     // create
     @PostMapping("/products")
-    public ResponseEntity<ProductDTO> createProduct(@Valid @RequestBody ProductDTO productDTO) {
-        return new ResponseEntity<>(productService.createProduct(productDTO), HttpStatus.CREATED);
+    public ResponseEntity<ProductDTO> createProduct(@Valid @RequestBody ProductBody productBody) {
+        return new ResponseEntity<>(productService.createProduct(productBody), HttpStatus.CREATED);
     }
 
     // update
     @PutMapping("/products/{productId}")
-    public ResponseEntity<ProductDTO> updateProduct(@PathVariable("productId") Long productId, @Valid @RequestBody ProductDTO productDTO) {
-        return new ResponseEntity<>(productService.updateProduct(productId, productDTO), HttpStatus.OK);
+    public ResponseEntity<ProductDTO> updateProduct(@PathVariable("productId") Long productId, @Valid @RequestBody ProductBody productBody) {
+        return new ResponseEntity<>(productService.updateProduct(productId, productBody), HttpStatus.OK);
     }
 
     // delete
@@ -56,8 +57,8 @@ public class ProductController {
 
     // get by category id
     @GetMapping("/products/filter")
-    public ResponseEntity<List<ProductDTO>> getProductsByCategory(@RequestParam("category") Long categoryId) {
-        return new ResponseEntity<>(productService.getProductsByCategory(categoryId), HttpStatus.OK);
+    public ResponseEntity<List<ProductDTO>> getProductsByCategory(@RequestParam("category") String category) {
+        return new ResponseEntity<>(productService.getProductsByCategory(category), HttpStatus.OK);
     }
 
     // search
