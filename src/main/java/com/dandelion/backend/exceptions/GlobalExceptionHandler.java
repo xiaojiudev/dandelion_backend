@@ -19,11 +19,11 @@ public class GlobalExceptionHandler {
     // Custom Exception Handler
 
     @ExceptionHandler(ResourceAlreadyExistsException.class)
-    public ResponseEntity<StandardError> userAlreadyExistsExceptionHandler(ResourceAlreadyExistsException e, HttpServletRequest request) {
+    public ResponseEntity<StandardError> resourceAlreadyExistsExceptionHandler(ResourceAlreadyExistsException e, HttpServletRequest request) {
         StandardError err = StandardError.builder()
                 .timeStamp(new Date())
                 .status(HttpStatus.CONFLICT.value())
-                .error("User is already exists")
+                .error("Resource is already exists")
                 .message(e.getMessage())
                 .path(request.getRequestURI())
                 .build();
@@ -32,11 +32,11 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<StandardError> userNotFoundExceptionHandler(ResourceNotFoundException e, HttpServletRequest request) {
+    public ResponseEntity<StandardError> resourceNotFoundExceptionHandler(ResourceNotFoundException e, HttpServletRequest request) {
         StandardError err = StandardError.builder()
                 .timeStamp(new Date())
                 .status(HttpStatus.NOT_FOUND.value())
-                .error("User not found")
+                .error("Resource not found")
                 .message(e.getMessage())
                 .path(request.getRequestURI())
                 .build();
