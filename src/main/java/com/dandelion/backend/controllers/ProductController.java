@@ -3,7 +3,7 @@ package com.dandelion.backend.controllers;
 
 import com.dandelion.backend.payloads.ApiResponse;
 import com.dandelion.backend.payloads.ProductBody;
-import com.dandelion.backend.payloads.ProductDTO;
+import com.dandelion.backend.payloads.dto.ProductDTO;
 import com.dandelion.backend.services.ProductService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;

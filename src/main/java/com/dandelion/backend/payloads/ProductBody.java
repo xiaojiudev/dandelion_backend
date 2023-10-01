@@ -9,17 +9,26 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 public class ProductBody {
 
-    private Long id;
-
     @NotBlank(message = "Name not blank!")
     @Size(min = 5, message = "Name at least 5 characters")
     private String name;
+
+    private String sku;
+
+    private Integer quantity;
+
+    @JsonProperty("img_url")
+    private String imgUrl;
+
+    private BigDecimal price;
 
     @NotBlank(message = "Information not blank!")
     @Size(min = 10, message = "Information at least 10 characters")

@@ -2,7 +2,7 @@ package com.dandelion.backend.controllers;
 
 
 import com.dandelion.backend.payloads.ApiResponse;
-import com.dandelion.backend.payloads.CategoryDTO;
+import com.dandelion.backend.payloads.dto.CategoryDTO;
 import com.dandelion.backend.services.CategoryService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;

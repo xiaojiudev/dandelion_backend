@@ -1,20 +1,20 @@
 package com.dandelion.backend.payloads;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.*;
+
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @Builder
-public class VariationBody {
+public class OptionBody {
 
     private Long id;
 
-    @JsonProperty("category_id")
-    private Long categoryId;
-
     private String name;
 
+    private List<String> options;
 }

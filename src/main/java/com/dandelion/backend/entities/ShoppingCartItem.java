@@ -1,6 +1,5 @@
 package com.dandelion.backend.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -25,9 +24,9 @@ public class ShoppingCartItem {
     @ToString.Exclude
     private ShoppingCart shoppingCart;
 
-    // Many-to-One with product_item table
+    // Many-to-One with product table
     @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
-    @JoinColumn(name = "product_item_id", nullable = false)
+    @JoinColumn(name = "product_id", nullable = false)
     @ToString.Exclude
-    private ProductItem productItem;
+    private Product product;
 }

@@ -2,7 +2,7 @@ package com.dandelion.backend.controllers;
 
 
 import com.dandelion.backend.payloads.ApiResponse;
-import com.dandelion.backend.payloads.UserDTO;
+import com.dandelion.backend.payloads.dto.UserDTO;
 import com.dandelion.backend.services.UserService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;

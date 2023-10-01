@@ -5,6 +5,7 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -27,12 +28,25 @@ public class Product {
     @Column(name = "name", nullable = false, unique = true)
     private String name;
 
+    @Column(name = "sku", nullable = false, unique = true, length = 50)
+    private String sku;
+
+    @Column(name = "quantity", nullable = false)
+    private Integer quantity;
+
+    @Column(name = "imgUrl", nullable = false)
     @Lob
+    private String imgUrl;
+
+    @Column(name = "price", nullable = false, precision = 10, scale = 2)
+    private BigDecimal price;
+
     @Column(name = "description", nullable = false)
+    @Lob
     private String description;
 
-    @Lob
     @Column(name = "information", nullable = false)
+    @Lob
     private String information;
 
     @Column(name = "created_at", updatable = false)
@@ -58,14 +72,25 @@ public class Product {
     @ToString.Exclude
     private List<Promotion> promotions = new ArrayList<>();
 
-    // One-to-Many with product_item table
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "product")
-    @ToString.Exclude
-    private List<ProductItem> productItems = new ArrayList<>();
-
-    // Many-to-One with product_category table
+    // Many-to-One with category table
     @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "category_id")
     @ToString.Exclude
     private Category category;
+
+    // Many-to-One with unit table
+    @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @JoinColumn(name = "unit_id")
+    @ToString.Exclude
+    private Unit unit;
+
+    // One-to-Many with oder_detail
+    @OneToMany(mappedBy = "product", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @ToString.Exclude
+    private List<OrderDetail> orderDetails = new ArrayList<>();
+
+    // One-to-Many with shopping_cart_item table
+    @OneToMany(mappedBy = "product", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @ToString.Exclude
+    private List<ShoppingCartItem> shoppingCartItems = new ArrayList<>();
 }

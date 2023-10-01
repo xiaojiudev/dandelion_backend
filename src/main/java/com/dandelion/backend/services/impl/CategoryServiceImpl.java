@@ -1,11 +1,12 @@
-package com.dandelion.backend.services;
+package com.dandelion.backend.services.impl;
 
 
 import com.dandelion.backend.entities.Category;
 import com.dandelion.backend.exceptions.ResourceAlreadyExistsException;
 import com.dandelion.backend.exceptions.ResourceNotFoundException;
-import com.dandelion.backend.payloads.CategoryDTO;
+import com.dandelion.backend.payloads.dto.CategoryDTO;
 import com.dandelion.backend.repositories.CategoryRepo;
+import com.dandelion.backend.services.CategoryService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Autowired
     private ModelMapper modelMapper;
 
+
     @Override
     public CategoryDTO createCategory(CategoryDTO categoryDTO) {
 
@@ -41,7 +43,7 @@ public class CategoryServiceImpl implements CategoryService {
 
         return modelMapper.map(addedCate, CategoryDTO.class);
     }
-
+    
     @Override
     public CategoryDTO updateCategory(Long categoryId, CategoryDTO categoryDTO) {
 

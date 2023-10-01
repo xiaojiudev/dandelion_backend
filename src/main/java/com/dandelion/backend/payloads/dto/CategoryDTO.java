@@ -1,4 +1,4 @@
-package com.dandelion.backend.payloads;
+package com.dandelion.backend.payloads.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
@@ -18,5 +18,6 @@ public class CategoryDTO {
     @Size(min = 1, max = 100, message = "Category name at least 1 characters")
     @JsonProperty(namespace = "name")
     private String name;
+
 
 }

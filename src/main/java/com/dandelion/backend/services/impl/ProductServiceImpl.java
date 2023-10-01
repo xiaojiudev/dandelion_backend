@@ -1,13 +1,14 @@
-package com.dandelion.backend.services;
+package com.dandelion.backend.services.impl;
 
 import com.dandelion.backend.entities.Category;
 import com.dandelion.backend.entities.Product;
 import com.dandelion.backend.exceptions.ResourceAlreadyExistsException;
 import com.dandelion.backend.exceptions.ResourceNotFoundException;
 import com.dandelion.backend.payloads.ProductBody;
-import com.dandelion.backend.payloads.ProductDTO;
+import com.dandelion.backend.payloads.dto.ProductDTO;
 import com.dandelion.backend.repositories.CategoryRepo;
 import com.dandelion.backend.repositories.ProductRepo;
+import com.dandelion.backend.services.ProductService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -55,6 +56,7 @@ public class ProductServiceImpl implements ProductService {
 
         // convert into DTO
         ProductDTO newProductDTO = modelMapper.map(newProduct, ProductDTO.class);
+        newProductDTO.setCategory(category.getName());
 
         return newProductDTO;
     }
@@ -82,6 +84,10 @@ public class ProductServiceImpl implements ProductService {
 
         // set properties
         product.setName(productBody.getName());
+        product.setSku(productBody.getSku());
+        product.setQuantity(productBody.getQuantity());
+        product.setImgUrl(productBody.getImgUrl());
+        product.setPrice(productBody.getPrice());
         product.setDescription(productBody.getDescription());
         product.setInformation(productBody.getInformation());
         product.setCategory(category);
@@ -91,6 +97,7 @@ public class ProductServiceImpl implements ProductService {
 
         // convert into DTO
         ProductDTO updatedProductDTO = modelMapper.map(updatedProduct, ProductDTO.class);
+        updatedProductDTO.setCategory(category.getName());
 
         return updatedProductDTO;
     }
@@ -111,8 +118,17 @@ public class ProductServiceImpl implements ProductService {
         List<Product> products = productRepo.findAll();
 
         List<ProductDTO> productDTOs = products.stream()
-                .map(item -> modelMapper.map(item, ProductDTO.class))
+                .map(item -> {
+                    ProductDTO productDTO = modelMapper.map(item, ProductDTO.class);
+
+                    productDTO.setCategory(item.getCategory().getName());
+
+                    return productDTO;
+
+                })
                 .collect(Collectors.toList());
+
+        System.out.println(products.get(0).getCategory().getName());
 
         return productDTOs;
     }

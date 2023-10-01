@@ -92,62 +92,35 @@ update `user` set `user_authentication_id`= 3  where `user`.id = 3;
 select * from `user`;
 
 -- PRODUCT CATEGORIES
-insert into `category`(`name`) values("Sneakers");
-insert into `category`(`name`) values("Sandals");
-insert into `category`(`name`) values("Boots");
+insert into `category`(`name`) values("Fruits");
+insert into `category`(`name`) values("Vegetables");
+insert into `category`(`name`) values("Meats");
 
 select * from `category`;
 
--- PRODUCT VARIATION
-insert into `variation`(`category_id`, `name`) values(1, "Size");
-insert into `variation`(`category_id`, `name`) values(1, "Colors");
+-- PRODUCT UNIT
+insert into `unit`(`name`) values ("Kg");
+insert into `unit`(`name`) values ("g");
+insert into `unit`(`name`) values ("pc");
+insert into `unit`(`name`) values ("dz");
+insert into `unit`(`name`) values ("bx");
+insert into `unit`(`name`) values ("bt");
+insert into `unit`(`name`) values ("l");
+insert into `unit`(`name`) values ("pkg");
+insert into `unit`(`name`) values ("br");
 
-select * from `variation`;
-
--- PRODUCT VARIATION OPTION
-	-- Ex:  variation_id = 1 => Size
-insert into `variation_option`(`variation_id`, `value`) values (1,"36");
-insert into `variation_option`(`variation_id`, `value`) values (1,"37");
-insert into `variation_option`(`variation_id`, `value`) values (1,"38");
-insert into `variation_option`(`variation_id`, `value`) values (1,"39");
-insert into `variation_option`(`variation_id`, `value`) values (1,"40");
-
-	-- Ex:  variation_id = 2 => Colors
-insert into `variation_option`(`variation_id`, `value`) values (2,"Black");
-insert into `variation_option`(`variation_id`, `value`) values (2,"White");
-insert into `variation_option`(`variation_id`, `value`) values (2,"Gray");
-
-select * from `variation_option`;
+select * from `unit`;
 
 -- PRODUCT
-insert into `product`(`category_id`, `name`, `description`, `information`) 
-	values("1", "StreetStyle Classic Canvas Sneakers", "this is desc", " this is information"); 
-insert into `product`(`category_id`, `name`, `description`, `information`) 
-	values("1", "EcoFlex Comfort Sneakers", "this is desc", " this is information"); 
+insert into `product`(`category_id`,`unit_id`, `name`, `weight`, `quantity`, `media_url`, `price`, `description`, `information`) 
+	values("1", 2, "StreetStyle Classic Canvas Orange", 500, 1523, "https://i.ebayimg.com/images/g/FqoAAOSwkH5kNnxM/s-l1200.jpg", 599, "this is desc", " this is information"); 
+insert into `product`(`category_id`,`unit_id`, `name`, `weight`, `quantity`, `media_url`, `price`, `description`, `information`) 
+	values("1", 2, "EcoFlex Comfort Apple", 500, 1732, "https://i.ebayimg.com/images/g/uwcAAOSwiLdkNnoV/s-l1200.webp", 399, "this is desc", " this is information"); 
 
 select * from `product`; 
 select * from `category`;
 
--- PRODUCT ITEM 
-insert into `product_item`(`product_id`, `SKU`, `qty_in_stock`,  `price`, `img_url`) 
-	values (1, "SKU1", 1823, 399, "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/f1247bad-7acf-4af6-8198-8c5aab26eeb2/air-max-flyknit-racer-shoes-Q9lN71.png");
-insert into `product_item`(`product_id`, `SKU`, `qty_in_stock`,  `price`, `img_url`) 
-	values (1, "SKU2", 3532, 499, "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/8199b269-d037-4d65-8d6a-bf16a1f7a411/air-max-90-ltr-older-shoes-9xnt2B.png");
 
-select * from `product_item`;
-
--- PRODUCT CONFIGURATION
-insert into `product_configuration`(`product_item_id`, `variation_option_id`) values (1, 1);
-insert into `product_configuration`(`product_item_id`, `variation_option_id`) values (1, 2);
-insert into `product_configuration`(`product_item_id`, `variation_option_id`) values (1, 3);
-insert into `product_configuration`(`product_item_id`, `variation_option_id`) values (1, 4);
-insert into `product_configuration`(`product_item_id`, `variation_option_id`) values (1, 5);
-insert into `product_configuration`(`product_item_id`, `variation_option_id`) values (1, 6);
-insert into `product_configuration`(`product_item_id`, `variation_option_id`) values (1, 7);
-insert into `product_configuration`(`product_item_id`, `variation_option_id`) values (1, 8);
-
-select * from `product_configuration`;
-select * from `variation_option`;
 
 -- SHOPPING CART
 insert into `shopping_cart`(`user_id`, `status`) values(1, true);
@@ -156,12 +129,12 @@ insert into `shopping_cart`(`user_id`, `status`) values(3, true);
  
  select * from `shopping_cart`;
  
-insert into `shopping_cart_item`(`cart_id`, `product_item_id`, `quantity`) values(1, 1 , 5);
-insert into `shopping_cart_item`(`cart_id`, `product_item_id`, `quantity`) values(1, 2 , 3);
-insert into `shopping_cart_item`(`cart_id`, `product_item_id`, `quantity`) values(2, 1 , 8);
-insert into `shopping_cart_item`(`cart_id`, `product_item_id`, `quantity`) values(2, 2 , 10);
-insert into `shopping_cart_item`(`cart_id`, `product_item_id`, `quantity`) values(3, 1 , 2);
-insert into `shopping_cart_item`(`cart_id`, `product_item_id`, `quantity`) values(3, 2 , 5);
+insert into `shopping_cart_item`(`cart_id`, `product_id`, `quantity`) values(1, 1 , 5);
+insert into `shopping_cart_item`(`cart_id`, `product_id`, `quantity`) values(1, 2 , 3);
+insert into `shopping_cart_item`(`cart_id`, `product_id`, `quantity`) values(2, 1 , 8);
+insert into `shopping_cart_item`(`cart_id`, `product_id`, `quantity`) values(2, 2 , 10);
+insert into `shopping_cart_item`(`cart_id`, `product_id`, `quantity`) values(3, 1 , 2);
+insert into `shopping_cart_item`(`cart_id`, `product_id`, `quantity`) values(3, 2 , 5);
 
 select * from `shopping_cart_item`;
 
@@ -192,8 +165,8 @@ VALUES (1, 'COD', '123 Nguyen Van A Street', 'Ly Dai Phat', '0326423996', 'ldpha
 select * from `shop_order`;
 
 -- ORDER DETAIL
-insert into `order_detail`(`product_item_id`, `shop_order_id`, `quantity`, `price`) values (1, 1, 1, 399);
-insert into `order_detail`(`product_item_id`, `shop_order_id`, `quantity`, `price`) values (2, 1, 1, 499);
+insert into `order_detail`(`product_id`, `shop_order_id`, `quantity`, `price`) values (1, 1, 1, 399);
+insert into `order_detail`(`product_id`, `shop_order_id`, `quantity`, `price`) values (2, 1, 1, 499);
 
 select * from `order_detail`;
 

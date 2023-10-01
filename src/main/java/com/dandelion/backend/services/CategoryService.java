@@ -1,6 +1,6 @@
 package com.dandelion.backend.services;
 
-import com.dandelion.backend.payloads.CategoryDTO;
+import com.dandelion.backend.payloads.dto.CategoryDTO;
 
 import java.util.List;
 

@@ -27,11 +27,11 @@ public class OrderDetail {
 
     // TODO: Define Relationship with ProductItem, ShopOrder
 
-    // Many-to-One with product_item table
+    // Many-to-One with product table
     @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
-    @JoinColumn(name = "product_item_id")
+    @JoinColumn(name = "product_id")
     @ToString.Exclude
-    private ProductItem productItem;
+    private Product product;
 
     // Many-to-One with shop_order table
     @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})

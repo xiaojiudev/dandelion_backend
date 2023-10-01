@@ -1,7 +1,7 @@
 package com.dandelion.backend.services;
 
 import com.dandelion.backend.payloads.ProductBody;
-import com.dandelion.backend.payloads.ProductDTO;
+import com.dandelion.backend.payloads.dto.ProductDTO;
 
 import java.util.List;
 

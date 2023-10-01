@@ -1,10 +1,11 @@
-package com.dandelion.backend.services;
+package com.dandelion.backend.services.impl;
 
 import com.dandelion.backend.entities.User;
 import com.dandelion.backend.exceptions.ResourceAlreadyExistsException;
 import com.dandelion.backend.exceptions.ResourceNotFoundException;
-import com.dandelion.backend.payloads.UserDTO;
+import com.dandelion.backend.payloads.dto.UserDTO;
 import com.dandelion.backend.repositories.UserRepo;
+import com.dandelion.backend.services.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -88,5 +89,5 @@ public class UserServiceImpl implements UserService {
 
 
     }
-    
+
 }

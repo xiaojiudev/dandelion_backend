@@ -1,4 +1,4 @@
-package com.dandelion.backend.payloads;
+package com.dandelion.backend.payloads.dto;
 
 
 import lombok.*;
@@ -8,11 +8,9 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
-public class VariationOptionDTO {
+public class OptionDTO {
 
     private Long id;
 
     private String value;
-
-    private VariationDTO variation;
 }

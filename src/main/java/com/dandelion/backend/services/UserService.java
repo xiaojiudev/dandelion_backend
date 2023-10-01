@@ -1,6 +1,6 @@
 package com.dandelion.backend.services;
 
-import com.dandelion.backend.payloads.UserDTO;
+import com.dandelion.backend.payloads.dto.UserDTO;
 
 import java.util.List;
 

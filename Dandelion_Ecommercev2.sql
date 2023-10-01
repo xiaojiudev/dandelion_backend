@@ -93,22 +93,14 @@ drop table if exists `product`;
 CREATE TABLE `product` (
   `id` bigint PRIMARY KEY AUTO_INCREMENT,
   `category_id` bigint not null,
+  `unit_id` bigint not null,
   `name` varchar(255) unique NOT NULL,
+  `weight` int unsigned NOT NULL,
+  `quantity` int unsigned NOT NULL default 0,
+  `media_url` text NOT NULL,
+  `price` decimal(10,2) NOT NULL,
   `description` text NOT NULL,
   `information` longtext NOT NULL,
-  `created_at` timestamp DEFAULT (now()),
-  `modified_at` timestamp DEFAULT null
-) engine=InnoDB default char set=utf8mb4;
-
-drop table if exists `product_item`;
-
-CREATE TABLE `product_item` (
-  `id` bigint PRIMARY KEY AUTO_INCREMENT,
-  `product_id` bigint not null,
-  `sku` varchar(50) unique NOT NULL,
-  `qty_in_stock` int unsigned NOT NULL,
-  `img_url` varchar(255) NOT NULL,
-  `price` decimal(10,2) NOT NULL,
   `created_at` timestamp DEFAULT (now()),
   `modified_at` timestamp DEFAULT null
 ) engine=InnoDB default char set=utf8mb4;
@@ -120,31 +112,13 @@ CREATE TABLE `category` (
   `name` varchar(255) unique NOT NULL
 ) engine=InnoDB default char set=utf8mb4;
 
-drop table if exists `variation`;
+drop table if exists `unit`;
 
-CREATE TABLE `variation` (
+CREATE TABLE `unit` (
   `id` bigint PRIMARY KEY AUTO_INCREMENT,
-  `category_id` bigint not null,
-  `name` varchar(255) NOT NULL,
-  unique key (`category_id`, `name`)
+  `name` varchar(255) unique NOT NULL
 ) engine=InnoDB default char set=utf8mb4;
 
-drop table if exists `variation_option`;
-
-CREATE TABLE `variation_option` (
-  `id` bigint PRIMARY KEY AUTO_INCREMENT,
-  `variation_id` bigint not null,
-  `value` varchar(255) NOT NULL,
-   unique key (`variation_id`, `value`)
-) engine=InnoDB default char set=utf8mb4;
-
-drop table if exists `product_configuration`;
-
-CREATE TABLE `product_configuration` (
-  `product_item_id` bigint,
-  `variation_option_id` bigint,
-  primary key(`product_item_id`, `variation_option_id`)
-) engine=InnoDB default char set=utf8mb4;
 
 drop table if exists `shopping_cart`;
 
@@ -159,9 +133,9 @@ drop table if exists `shopping_cart_item`;
 CREATE TABLE `shopping_cart_item` (
   `id` bigint PRIMARY KEY AUTO_INCREMENT,
   `cart_id` bigint not null,
-  `product_item_id` bigint not null,
+  `product_id` bigint not null,
   `quantity` int unsigned NOT NULL default 1 check(`quantity` >= 1),
-  unique key `unique_cart_product` (`cart_id`, `product_item_id`)
+  unique key `unique_cart_product` (`cart_id`, `product_id`)
 ) engine=InnoDB default char set=utf8mb4;
 
 drop table if exists `shop_order`;
@@ -185,7 +159,7 @@ drop table if exists `order_detail`;
 
 CREATE TABLE `order_detail` (
   `id` bigint PRIMARY KEY AUTO_INCREMENT,
-  `product_item_id` bigint not null,
+  `product_id` bigint not null,
   `shop_order_id` bigint not null,
   `quantity` int unsigned NOT NULL default 1 check(`quantity` >= 1),
   `price` decimal(10,2) unsigned not null
@@ -253,6 +227,8 @@ CREATE TABLE `promotion_product` (
 
 
 
+ALTER TABLE `user` ADD FOREIGN KEY (`user_authentication_id`) REFERENCES `user_authentication` (`id`);
+
 ALTER TABLE `address` ADD FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
 
 ALTER TABLE `user_payment_method` ADD FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
@@ -265,21 +241,13 @@ ALTER TABLE `user_role` ADD FOREIGN KEY (`role_id`) REFERENCES `role` (`id`);
 
 ALTER TABLE `product` ADD FOREIGN KEY (`category_id`) REFERENCES `category` (`id`);
 
-ALTER TABLE `product_item` ADD FOREIGN KEY (`product_id`) REFERENCES `product` (`id`);
-
-ALTER TABLE `variation` ADD FOREIGN KEY (`category_id`) REFERENCES `category` (`id`);
-
-ALTER TABLE `variation_option` ADD FOREIGN KEY (`variation_id`) REFERENCES `variation` (`id`);
-
-ALTER TABLE `product_configuration` ADD FOREIGN KEY (`product_item_id`) REFERENCES `product_item` (`id`);
-
-ALTER TABLE `product_configuration` ADD FOREIGN KEY (`variation_option_id`) REFERENCES `variation_option` (`id`);
+ALTER TABLE `product` ADD FOREIGN KEY (`unit_id`) REFERENCES `unit` (`id`);
 
 ALTER TABLE `shopping_cart` ADD FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
 
 ALTER TABLE `shopping_cart_item` ADD FOREIGN KEY (`cart_id`) REFERENCES `shopping_cart` (`id`);
 
-ALTER TABLE `shopping_cart_item` ADD FOREIGN KEY (`product_item_id`) REFERENCES `product_item` (`id`);
+ALTER TABLE `shopping_cart_item` ADD FOREIGN KEY (`product_id`) REFERENCES `product` (`id`);
 
 ALTER TABLE `shop_order` ADD FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
 
@@ -287,13 +255,13 @@ ALTER TABLE `shop_order` ADD FOREIGN KEY (`shipping_method_id`) REFERENCES `ship
 
 ALTER TABLE `shop_order` ADD FOREIGN KEY (`order_status_id`) REFERENCES `order_status` (`id`);
 
-ALTER TABLE `order_detail` ADD FOREIGN KEY (`product_item_id`) REFERENCES `product_item` (`id`);
+ALTER TABLE `order_detail` ADD FOREIGN KEY (`product_id`) REFERENCES `product` (`id`);
 
 ALTER TABLE `order_detail` ADD FOREIGN KEY (`shop_order_id`) REFERENCES `shop_order` (`id`);
 
-ALTER TABLE `user_review` ADD FOREIGN KEY (`ordered_product_id`) REFERENCES `order_detail` (`id`);
-
 ALTER TABLE `user_review` ADD FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
+
+ALTER TABLE `user_review` ADD FOREIGN KEY (`ordered_product_id`) REFERENCES `order_detail` (`id`);
 
 ALTER TABLE `product_wishlist` ADD FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
 
@@ -302,7 +270,3 @@ ALTER TABLE `product_wishlist` ADD FOREIGN KEY (`product_id`) REFERENCES `produc
 ALTER TABLE `promotion_product` ADD FOREIGN KEY (`product_id`) REFERENCES `product` (`id`);
 
 ALTER TABLE `promotion_product` ADD FOREIGN KEY (`promotion_id`) REFERENCES `promotion` (`id`);
-
-ALTER TABLE `user` ADD FOREIGN KEY (`user_authentication_id`) REFERENCES `user_authentication` (`id`);
-
-

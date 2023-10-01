@@ -1,4 +1,4 @@
-package com.dandelion.backend.payloads;
+package com.dandelion.backend.payloads.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
