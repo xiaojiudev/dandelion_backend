@@ -15,21 +15,15 @@ public class GenderDeserializer extends JsonDeserializer<Gender> {
         JsonNode node = p.getCodec().readTree(p);
         String genderValue = node.asText();
 
-        System.out.println(genderValue);
-        System.out.println(Gender.MALE);
-
         if (genderValue.equalsIgnoreCase(Gender.OTHER.toString())) {
-            System.out.println("Equal Other");
             return Gender.OTHER;
         }
 
         if (genderValue.equalsIgnoreCase(Gender.MALE.toString())) {
-            System.out.println("Equal MALE");
             return Gender.MALE;
         }
 
         if (genderValue.equalsIgnoreCase(Gender.FEMALE.toString())) {
-            System.out.println("Equal FEMALE");
             return Gender.FEMALE;
         }
 
