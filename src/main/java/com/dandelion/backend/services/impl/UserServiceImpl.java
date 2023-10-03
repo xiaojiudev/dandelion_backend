@@ -7,13 +7,16 @@ import com.dandelion.backend.exceptions.ResourceAlreadyExistsException;
 import com.dandelion.backend.exceptions.ResourceNotFoundException;
 import com.dandelion.backend.payloads.UserBody;
 import com.dandelion.backend.payloads.dto.UserDTO;
+import com.dandelion.backend.repositories.RoleRepo;
 import com.dandelion.backend.repositories.UserRepo;
+import com.dandelion.backend.services.EncryptionService;
 import com.dandelion.backend.services.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -24,34 +27,41 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepo userRepo;
-
+    @Autowired
+    private RoleRepo roleRepo;
     @Autowired
     private ModelMapper modelMapper;
+    @Autowired
+    private EncryptionService encryptionService;
 
     @Override
     public UserDTO createUser(UserBody userBody) {
 
-        User user = modelMapper.map(userBody, User.class);
-
-        System.out.println(userBody.getRoles());
-        List<Role> roles = userBody.getRoles().stream().map(item -> {
-            Role role = new Role();
-            role.setRoleName(item);
-            return role;
-        }).collect(Collectors.toList());
-
-        System.out.println(roles);
-        user.setRoles(roles);
-
-        Optional<User> tempUser = userRepo.findByEmailIgnoreCase(user.getEmail());
+        Optional<User> tempUser = userRepo.findByEmailIgnoreCase(userBody.getEmail());
 
         if (tempUser.isPresent()) {
             throw new ResourceAlreadyExistsException("User already exist with id = " + tempUser.get().getId());
         }
 
+        List<Role> userRoles = getUserRoleHelper(userBody.getRole());
+
+        User user = User.builder()
+                .email(userBody.getEmail())
+                .phone(userBody.getPhone())
+                .password(encryptionService.encryptPassword(userBody.getPassword()))
+                .fullName(userBody.getFullName())
+                .gender(userBody.getGender())
+                .avatar(userBody.getAvatar())
+                .roles(userRoles)
+                .build();
+
         User savedUser = userRepo.save(user);
 
-        return modelMapper.map(savedUser, UserDTO.class);
+        UserDTO userResponse = modelMapper.map(savedUser, UserDTO.class);
+        List<RoleBase> roleList = userRoles.stream().map(Role::getRoleName).collect(Collectors.toList());
+        userResponse.setRoles(roleList);
+
+        return userResponse;
     }
 
 
@@ -61,6 +71,7 @@ public class UserServiceImpl implements UserService {
         User user = userRepo.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id = " + userId));
 
+        List<Role> userRoles = getUserRoleHelper(userBody.getRole());
 
         user.setEmail(userBody.getEmail());
         user.setPhone(userBody.getPhone());
@@ -68,10 +79,15 @@ public class UserServiceImpl implements UserService {
         user.setFullName(userBody.getFullName());
         user.setGender(userBody.getGender());
         user.setAvatar(userBody.getAvatar());
+        user.setRoles(userRoles);
 
         User updatedUser = userRepo.save(user);
 
-        return modelMapper.map(updatedUser, UserDTO.class);
+        UserDTO userResponse = modelMapper.map(updatedUser, UserDTO.class);
+        List<RoleBase> roleList = userRoles.stream().map(Role::getRoleName).collect(Collectors.toList());
+        userResponse.setRoles(roleList);
+
+        return userResponse;
     }
 
     @Override
@@ -80,7 +96,11 @@ public class UserServiceImpl implements UserService {
         User user = userRepo.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id = " + userId));
 
-        return modelMapper.map(user, UserDTO.class);
+        UserDTO userResponse = modelMapper.map(user, UserDTO.class);
+        List<RoleBase> userRoles = user.getRoles().stream().map(Role::getRoleName).collect(Collectors.toList());
+        userResponse.setRoles(userRoles);
+
+        return userResponse;
     }
 
     @Override
@@ -109,6 +129,35 @@ public class UserServiceImpl implements UserService {
         userRepo.delete(user);
 
 
+    }
+
+    private List<Role> getUserRoleHelper(String roleBody) {
+
+        List<Role> userRoles = new ArrayList<>();
+        if (roleBody == null) {
+            roleBody = RoleBase.CUSTOMER.toString();
+        }
+
+        Role customerRole = roleRepo.findByRoleName(RoleBase.CUSTOMER)
+                .orElseThrow(() -> new ResourceNotFoundException("Role not exist!"));
+        userRoles.add(customerRole);
+
+        if (roleBody.equalsIgnoreCase(RoleBase.ADMIN.toString())) {
+            Role adminRole = roleRepo.findByRoleName(RoleBase.ADMIN)
+                    .orElseThrow(() -> new ResourceNotFoundException("Role not exist!"));
+            Role managerRole = roleRepo.findByRoleName(RoleBase.MANAGER)
+                    .orElseThrow(() -> new ResourceNotFoundException("Role not exist!"));
+            userRoles.add(adminRole);
+            userRoles.add(managerRole);
+        }
+
+        if (roleBody.equalsIgnoreCase(RoleBase.MANAGER.toString())) {
+            Role managerRole = roleRepo.findByRoleName(RoleBase.MANAGER)
+                    .orElseThrow(() -> new ResourceNotFoundException("Role not exist!"));
+            userRoles.add(managerRole);
+        }
+
+        return userRoles;
     }
 
 }
