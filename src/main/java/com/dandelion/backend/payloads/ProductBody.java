@@ -20,13 +20,13 @@ public class ProductBody {
     @NotBlank(message = "Name not blank!")
     @Size(min = 5, message = "Name at least 5 characters")
     private String name;
-
-    private String sku;
+    
+    private BigDecimal weight;
 
     private Integer quantity;
 
-    @JsonProperty("img_url")
-    private String imgUrl;
+    @JsonProperty("media_url")
+    private String mediaUrl;
 
     private BigDecimal price;
 
@@ -38,7 +38,11 @@ public class ProductBody {
     @Size(min = 10, message = "Information at least 10 characters")
     private String information;
 
+    @Size(max = 500, message = "Tag max with 500 characters")
+    private String tag;
+
     @JsonProperty("category_id")
     @NotNull(message = "Category ID not null!")
     private Long categoryId;
+
 }

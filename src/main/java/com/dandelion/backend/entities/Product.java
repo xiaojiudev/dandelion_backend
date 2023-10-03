@@ -28,15 +28,15 @@ public class Product {
     @Column(name = "name", nullable = false, unique = true)
     private String name;
 
-    @Column(name = "sku", nullable = false, unique = true, length = 50)
-    private String sku;
+    @Column(name = "weight", nullable = false, precision = 5, scale = 2)
+    private BigDecimal weight;
 
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
 
-    @Column(name = "imgUrl", nullable = false)
+    @Column(name = "media_url", nullable = false)
     @Lob
-    private String imgUrl;
+    private String mediaUrl;
 
     @Column(name = "price", nullable = false, precision = 10, scale = 2)
     private BigDecimal price;
@@ -48,6 +48,9 @@ public class Product {
     @Column(name = "information", nullable = false)
     @Lob
     private String information;
+
+    @Column(name = "tag", length = 500)
+    private String tag;
 
     @Column(name = "created_at", updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
@@ -78,11 +81,6 @@ public class Product {
     @ToString.Exclude
     private Category category;
 
-    // Many-to-One with unit table
-    @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
-    @JoinColumn(name = "unit_id")
-    @ToString.Exclude
-    private Unit unit;
 
     // One-to-Many with oder_detail
     @OneToMany(mappedBy = "product", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})

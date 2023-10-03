@@ -11,24 +11,24 @@ import java.io.IOException;
 
 public class GenderDeserializer extends JsonDeserializer<Gender> {
     @Override
-    public Gender deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JacksonException {
+    public Gender deserialize(JsonParser p, DeserializationContext ctx) throws IOException, JacksonException {
         JsonNode node = p.getCodec().readTree(p);
         String genderValue = node.asText();
 
         System.out.println(genderValue);
         System.out.println(Gender.MALE);
 
-        if (genderValue.equals(Gender.OTHER.toString())) {
+        if (genderValue.equalsIgnoreCase(Gender.OTHER.toString())) {
             System.out.println("Equal Other");
             return Gender.OTHER;
         }
 
-        if (genderValue.equals(Gender.MALE.toString())) {
+        if (genderValue.equalsIgnoreCase(Gender.MALE.toString())) {
             System.out.println("Equal MALE");
             return Gender.MALE;
         }
 
-        if (genderValue.equals(Gender.FEMALE.toString())) {
+        if (genderValue.equalsIgnoreCase(Gender.FEMALE.toString())) {
             System.out.println("Equal FEMALE");
             return Gender.FEMALE;
         }

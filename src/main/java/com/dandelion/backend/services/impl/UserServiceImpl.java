@@ -1,8 +1,11 @@
 package com.dandelion.backend.services.impl;
 
+import com.dandelion.backend.entities.Role;
 import com.dandelion.backend.entities.User;
+import com.dandelion.backend.entities.enumType.RoleBase;
 import com.dandelion.backend.exceptions.ResourceAlreadyExistsException;
 import com.dandelion.backend.exceptions.ResourceNotFoundException;
+import com.dandelion.backend.payloads.UserBody;
 import com.dandelion.backend.payloads.dto.UserDTO;
 import com.dandelion.backend.repositories.UserRepo;
 import com.dandelion.backend.services.UserService;
@@ -26,9 +29,19 @@ public class UserServiceImpl implements UserService {
     private ModelMapper modelMapper;
 
     @Override
-    public UserDTO createUser(UserDTO userDTO) {
+    public UserDTO createUser(UserBody userBody) {
 
-        User user = modelMapper.map(userDTO, User.class);
+        User user = modelMapper.map(userBody, User.class);
+
+        System.out.println(userBody.getRoles());
+        List<Role> roles = userBody.getRoles().stream().map(item -> {
+            Role role = new Role();
+            role.setRoleName(item);
+            return role;
+        }).collect(Collectors.toList());
+
+        System.out.println(roles);
+        user.setRoles(roles);
 
         Optional<User> tempUser = userRepo.findByEmailIgnoreCase(user.getEmail());
 
@@ -41,19 +54,20 @@ public class UserServiceImpl implements UserService {
         return modelMapper.map(savedUser, UserDTO.class);
     }
 
+
     @Override
-    public UserDTO updateUser(Long userId, UserDTO userDTO) {
+    public UserDTO updateUser(Long userId, UserBody userBody) {
 
         User user = userRepo.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id = " + userId));
 
 
-        user.setEmail(userDTO.getEmail());
-        user.setPhone(userDTO.getPhone());
-        user.setPassword(userDTO.getPassword());
-        user.setFullName(userDTO.getFullName());
-        user.setGender(userDTO.getGender());
-        user.setAvatar(userDTO.getAvatar());
+        user.setEmail(userBody.getEmail());
+        user.setPhone(userBody.getPhone());
+        user.setPassword(userBody.getPassword());
+        user.setFullName(userBody.getFullName());
+        user.setGender(userBody.getGender());
+        user.setAvatar(userBody.getAvatar());
 
         User updatedUser = userRepo.save(user);
 
@@ -74,7 +88,14 @@ public class UserServiceImpl implements UserService {
 
         List<User> users = userRepo.findAll();
 
-        List<UserDTO> userDTOS = users.stream().map(user -> modelMapper.map(user, UserDTO.class)).collect(Collectors.toList());
+        List<UserDTO> userDTOS = users.stream().map(user -> {
+            UserDTO userDTO = modelMapper.map(user, UserDTO.class);
+
+            List<RoleBase> userRoles = user.getRoles().stream().map(Role::getRoleName).collect(Collectors.toList());
+            userDTO.setRoles(userRoles);
+
+            return userDTO;
+        }).collect(Collectors.toList());
 
         return userDTOS;
     }

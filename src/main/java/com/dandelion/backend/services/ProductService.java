@@ -16,8 +16,11 @@ public interface ProductService {
 
     List<ProductDTO> getAllProducts();
 
-    // get all product by category
+    // get all products by category
     List<ProductDTO> getProductsByCategory(String category);
+
+    // get all products by tag
+    List<ProductDTO> getProductsByTag(String tag);
 
     // search products
     List<ProductDTO> searchProducts(String keyword);

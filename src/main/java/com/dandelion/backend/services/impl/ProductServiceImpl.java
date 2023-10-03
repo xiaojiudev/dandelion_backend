@@ -84,12 +84,13 @@ public class ProductServiceImpl implements ProductService {
 
         // set properties
         product.setName(productBody.getName());
-        product.setSku(productBody.getSku());
+        product.setWeight(productBody.getWeight());
         product.setQuantity(productBody.getQuantity());
-        product.setImgUrl(productBody.getImgUrl());
+        product.setMediaUrl(productBody.getMediaUrl());
         product.setPrice(productBody.getPrice());
         product.setDescription(productBody.getDescription());
         product.setInformation(productBody.getInformation());
+        product.setTag(productBody.getTag());
         product.setCategory(category);
 
         // save
@@ -120,15 +121,12 @@ public class ProductServiceImpl implements ProductService {
         List<ProductDTO> productDTOs = products.stream()
                 .map(item -> {
                     ProductDTO productDTO = modelMapper.map(item, ProductDTO.class);
-
                     productDTO.setCategory(item.getCategory().getName());
 
                     return productDTO;
 
                 })
                 .collect(Collectors.toList());
-
-        System.out.println(products.get(0).getCategory().getName());
 
         return productDTOs;
     }
@@ -140,6 +138,7 @@ public class ProductServiceImpl implements ProductService {
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found with id = " + productId));
 
         ProductDTO productDTO = modelMapper.map(product, ProductDTO.class);
+        productDTO.setCategory(product.getCategory().getName());
 
         return productDTO;
     }
@@ -154,6 +153,21 @@ public class ProductServiceImpl implements ProductService {
 
         if (products.isEmpty()) {
             throw new ResourceNotFoundException("Product not found!");
+        }
+
+        List<ProductDTO> productDTOs = products.stream()
+                .map(item -> modelMapper.map(item, ProductDTO.class))
+                .collect(Collectors.toList());
+
+        return productDTOs;
+    }
+
+    @Override
+    public List<ProductDTO> getProductsByTag(String tag) {
+        List<Product> products = productRepo.findByTagContainsIgnoreCase(tag);
+
+        if (products.isEmpty()) {
+            throw new ResourceNotFoundException("Products not found!");
         }
 
         List<ProductDTO> productDTOs = products.stream()

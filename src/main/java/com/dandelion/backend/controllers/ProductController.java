@@ -56,9 +56,15 @@ public class ProductController {
     }
 
     // get by category id
-    @GetMapping("/products/filter")
+    @GetMapping("/products/cate")
     public ResponseEntity<List<ProductDTO>> getProductsByCategory(@RequestParam("category") String category) {
         return new ResponseEntity<>(productService.getProductsByCategory(category), HttpStatus.OK);
+    }
+
+    // get by category id
+    @GetMapping("/products/tag")
+    public ResponseEntity<List<ProductDTO>> getProductsByTag(@RequestParam("tag") String tag) {
+        return new ResponseEntity<>(productService.getProductsByTag(tag), HttpStatus.OK);
     }
 
     // search

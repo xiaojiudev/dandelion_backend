@@ -98,24 +98,11 @@ insert into `category`(`name`) values("Meats");
 
 select * from `category`;
 
--- PRODUCT UNIT
-insert into `unit`(`name`) values ("Kg");
-insert into `unit`(`name`) values ("g");
-insert into `unit`(`name`) values ("pc");
-insert into `unit`(`name`) values ("dz");
-insert into `unit`(`name`) values ("bx");
-insert into `unit`(`name`) values ("bt");
-insert into `unit`(`name`) values ("l");
-insert into `unit`(`name`) values ("pkg");
-insert into `unit`(`name`) values ("br");
-
-select * from `unit`;
-
 -- PRODUCT
-insert into `product`(`category_id`,`unit_id`, `name`, `weight`, `quantity`, `media_url`, `price`, `description`, `information`) 
-	values("1", 2, "StreetStyle Classic Canvas Orange", 500, 1523, "https://i.ebayimg.com/images/g/FqoAAOSwkH5kNnxM/s-l1200.jpg", 599, "this is desc", " this is information"); 
-insert into `product`(`category_id`,`unit_id`, `name`, `weight`, `quantity`, `media_url`, `price`, `description`, `information`) 
-	values("1", 2, "EcoFlex Comfort Apple", 500, 1732, "https://i.ebayimg.com/images/g/uwcAAOSwiLdkNnoV/s-l1200.webp", 399, "this is desc", " this is information"); 
+insert into `product`(`category_id`, `name`, `weight`, `quantity`, `media_url`, `price`, `description`, `information`, `tag`) 
+	values("1", "StreetStyle Classic Canvas Orange", 500, 1523, "https://i.ebayimg.com/images/g/FqoAAOSwkH5kNnxM/s-l1200.jpg", 599, "this is desc", " this is information", "tag1,tag2"); 
+insert into `product`(`category_id`, `name`, `weight`, `quantity`, `media_url`, `price`, `description`, `information`, `tag`) 
+	values("1", "EcoFlex Comfort Apple", 500, 1732, "https://i.ebayimg.com/images/g/uwcAAOSwiLdkNnoV/s-l1200.webp", 399, "this is desc", " this is information", "tag1,tag3"); 
 
 select * from `product`; 
 select * from `category`;
@@ -178,4 +165,4 @@ INSERT INTO user_review (`user_id`, `ordered_product_id`, `rating_value`, `comme
 	VALUES (1, 2, 5, 'I love this product. It\'s the best purchase I\'ve made.', 8, 'https://example.com/review2.png');
     
 select * from `user_review`;
-
+-- 

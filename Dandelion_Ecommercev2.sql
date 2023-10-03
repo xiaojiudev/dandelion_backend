@@ -7,7 +7,7 @@ drop table if exists `user`;
 CREATE TABLE `user` (
 	  `id` bigint PRIMARY KEY AUTO_INCREMENT,
 	  `email` varchar(255) UNIQUE NOT NULL,
-	  `phone` varchar(20) UNIQUE NOT NULL,
+	  `phone` varchar(20) NOT NULL,
 	  `password` varchar(1000) NOT NULL,
 	  `full_name` varchar(100) NOT NULL,
 	  `gender` ENUM ('MALE', 'FEMALE', 'OTHER') default 'OTHER',
@@ -93,14 +93,14 @@ drop table if exists `product`;
 CREATE TABLE `product` (
   `id` bigint PRIMARY KEY AUTO_INCREMENT,
   `category_id` bigint not null,
-  `unit_id` bigint not null,
   `name` varchar(255) unique NOT NULL,
-  `weight` int unsigned NOT NULL,
+  `weight` decimal(5,2) unsigned NOT NULL,
   `quantity` int unsigned NOT NULL default 0,
   `media_url` text NOT NULL,
   `price` decimal(10,2) NOT NULL,
   `description` text NOT NULL,
   `information` longtext NOT NULL,
+  `tag` varchar(500) null,
   `created_at` timestamp DEFAULT (now()),
   `modified_at` timestamp DEFAULT null
 ) engine=InnoDB default char set=utf8mb4;
@@ -111,14 +111,6 @@ CREATE TABLE `category` (
   `id` bigint PRIMARY KEY AUTO_INCREMENT,
   `name` varchar(255) unique NOT NULL
 ) engine=InnoDB default char set=utf8mb4;
-
-drop table if exists `unit`;
-
-CREATE TABLE `unit` (
-  `id` bigint PRIMARY KEY AUTO_INCREMENT,
-  `name` varchar(255) unique NOT NULL
-) engine=InnoDB default char set=utf8mb4;
-
 
 drop table if exists `shopping_cart`;
 
@@ -240,8 +232,6 @@ ALTER TABLE `user_role` ADD FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
 ALTER TABLE `user_role` ADD FOREIGN KEY (`role_id`) REFERENCES `role` (`id`);
 
 ALTER TABLE `product` ADD FOREIGN KEY (`category_id`) REFERENCES `category` (`id`);
-
-ALTER TABLE `product` ADD FOREIGN KEY (`unit_id`) REFERENCES `unit` (`id`);
 
 ALTER TABLE `shopping_cart` ADD FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
 

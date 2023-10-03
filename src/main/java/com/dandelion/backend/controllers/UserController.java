@@ -2,6 +2,7 @@ package com.dandelion.backend.controllers;
 
 
 import com.dandelion.backend.payloads.ApiResponse;
+import com.dandelion.backend.payloads.UserBody;
 import com.dandelion.backend.payloads.dto.UserDTO;
 import com.dandelion.backend.services.UserService;
 import jakarta.validation.Valid;
@@ -24,14 +25,14 @@ public class UserController {
 
     // POST - create user
     @PostMapping("/users")
-    public ResponseEntity<UserDTO> createUser(@Valid @RequestBody UserDTO userDTO) {
-        return new ResponseEntity<>(userService.createUser(userDTO), HttpStatus.CREATED);
+    public ResponseEntity<UserDTO> createUser(@Valid @RequestBody UserBody userBody) {
+        return new ResponseEntity<>(userService.createUser(userBody), HttpStatus.CREATED);
     }
 
     // PUT - update user
     @PutMapping("/users/{userId}")
-    public ResponseEntity<UserDTO> updateUser(@PathVariable("userId") Long userId, @Valid @RequestBody UserDTO userDTO) {
-        return new ResponseEntity<>(userService.updateUser(userId, userDTO), HttpStatus.OK);
+    public ResponseEntity<UserDTO> updateUser(@PathVariable("userId") Long userId, @Valid @RequestBody UserBody userBody) {
+        return new ResponseEntity<>(userService.updateUser(userId, userBody), HttpStatus.OK);
     }
 
     // DELETE - delete user
