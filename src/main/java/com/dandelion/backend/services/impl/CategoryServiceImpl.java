@@ -2,6 +2,7 @@ package com.dandelion.backend.services.impl;
 
 
 import com.dandelion.backend.entities.Category;
+import com.dandelion.backend.entities.Product;
 import com.dandelion.backend.exceptions.ResourceAlreadyExistsException;
 import com.dandelion.backend.exceptions.ResourceNotFoundException;
 import com.dandelion.backend.payloads.dto.CategoryDTO;
@@ -43,7 +44,7 @@ public class CategoryServiceImpl implements CategoryService {
 
         return modelMapper.map(addedCate, CategoryDTO.class);
     }
-    
+
     @Override
     public CategoryDTO updateCategory(Long categoryId, CategoryDTO categoryDTO) {
 
@@ -63,6 +64,13 @@ public class CategoryServiceImpl implements CategoryService {
         Category cate = categoryRepo.findById(categoryId)
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found with id = " + categoryId));
 
+        List<Product> products = cate.getProducts();
+        for (Product product : products) {
+            product.setCategory(null);
+        }
+
+        products.clear();
+
         categoryRepo.delete(cate);
     }
 
@@ -80,7 +88,10 @@ public class CategoryServiceImpl implements CategoryService {
 
         List<Category> categories = categoryRepo.findAll();
 
-        List<CategoryDTO> cateDTOs = categories.stream().map((cat) -> modelMapper.map(cat, CategoryDTO.class)).collect(Collectors.toList());
+        List<CategoryDTO> cateDTOs = categories
+                .stream()
+                .map((cat) -> modelMapper.map(cat, CategoryDTO.class))
+                .collect(Collectors.toList());
 
         return cateDTOs;
     }
