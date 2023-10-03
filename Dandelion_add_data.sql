@@ -6,7 +6,7 @@ insert into `user`(`email`, `phone`, `password`, `full_name`) values('zzsakura20
 insert into `user`(`email`, `phone`, `password`, `full_name`) values('phatb1705292@student.ctu.edu.vn','0335747997', '$10$rOq4Q6.4CWC9cY5hqJbuZuMnfjp4yxM4rvytBuitFzZYbndLM0Pb2', 'nguyen van a');
 
 select * from `user`; 
-
+select * from `product`; 
 -- ROLES
 insert into `role`(`role_name`) values ("ADMIN");
 insert into `role`(`role_name`) values ("MANAGER");
@@ -27,6 +27,7 @@ insert into `user_role`(`user_id`, `role_id`) values (2, 3);
 	-- CUSTOMER with id=3 have only 1 role
 insert into `user_role`(`user_id`, `role_id`) values (3, 3);
 
+select * from `user`;
 select * from `user_role`;
 
 -- PAYMENT TYPE
@@ -103,6 +104,10 @@ insert into `product`(`category_id`, `name`, `weight`, `quantity`, `media_url`, 
 	values("1", "StreetStyle Classic Canvas Orange", 500, 1523, "https://i.ebayimg.com/images/g/FqoAAOSwkH5kNnxM/s-l1200.jpg", 599, "this is desc", " this is information", "tag1,tag2"); 
 insert into `product`(`category_id`, `name`, `weight`, `quantity`, `media_url`, `price`, `description`, `information`, `tag`) 
 	values("1", "EcoFlex Comfort Apple", 500, 1732, "https://i.ebayimg.com/images/g/uwcAAOSwiLdkNnoV/s-l1200.webp", 399, "this is desc", " this is information", "tag1,tag3"); 
+
+insert into `product`(`name`, `weight`, `quantity`, `media_url`, `price`, `description`, `information`, `tag`) 
+	values("EcoFlex Comfort Apple", 500, 1732, "https://i.ebayimg.com/images/g/uwcAAOSwiLdkNnoV/s-l1200.webp", 399, "this is desc", " this is information", "tag1,tag3"); 
+
 
 select * from `product`; 
 select * from `category`;

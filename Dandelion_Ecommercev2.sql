@@ -92,7 +92,7 @@ drop table if exists `product`;
 
 CREATE TABLE `product` (
   `id` bigint PRIMARY KEY AUTO_INCREMENT,
-  `category_id` bigint not null,
+  `category_id` bigint default null,
   `name` varchar(255) unique NOT NULL,
   `weight` decimal(5,2) unsigned NOT NULL,
   `quantity` int unsigned NOT NULL default 0,
