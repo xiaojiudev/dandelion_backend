@@ -1,6 +1,7 @@
 package com.dandelion.backend.services;
 
 import com.dandelion.backend.payloads.ProductBody;
+import com.dandelion.backend.payloads.ProductResponse;
 import com.dandelion.backend.payloads.dto.ProductDTO;
 
 import java.util.List;
@@ -14,7 +15,7 @@ public interface ProductService {
 
     ProductDTO getProductById(Long productId);
 
-    List<ProductDTO> getAllProducts();
+    ProductResponse getAllProducts(Integer pageNumber, Integer pageSize, String sortBy, String sortDir);
 
     // get all products by category
     List<ProductDTO> getProductsByCategory(String category);

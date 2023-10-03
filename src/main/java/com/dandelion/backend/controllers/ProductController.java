@@ -3,6 +3,7 @@ package com.dandelion.backend.controllers;
 
 import com.dandelion.backend.payloads.ApiResponse;
 import com.dandelion.backend.payloads.ProductBody;
+import com.dandelion.backend.payloads.ProductResponse;
 import com.dandelion.backend.payloads.dto.ProductDTO;
 import com.dandelion.backend.services.ProductService;
 import jakarta.validation.Valid;
@@ -45,8 +46,13 @@ public class ProductController {
 
     // get all
     @GetMapping("/products")
-    public ResponseEntity<List<ProductDTO>> getAllProducts() {
-        return new ResponseEntity<>(productService.getAllProducts(), HttpStatus.OK);
+    public ResponseEntity<ProductResponse> getAllProducts(
+            @RequestParam(value = "page", defaultValue = "0", required = false) Integer pageNumber,
+            @RequestParam(value = "size", defaultValue = "3", required = false) Integer pageSize,
+            @RequestParam(value = "sortBy", defaultValue = "id", required = false) String sortBy,
+            @RequestParam(value = "sortDir", defaultValue = "asc", required = false) String sortDir
+    ) {
+        return new ResponseEntity<>(productService.getAllProducts(pageNumber, pageSize, sortBy, sortDir), HttpStatus.OK);
     }
 
     // get one

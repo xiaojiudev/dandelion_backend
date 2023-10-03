@@ -5,12 +5,17 @@ import com.dandelion.backend.entities.Product;
 import com.dandelion.backend.exceptions.ResourceAlreadyExistsException;
 import com.dandelion.backend.exceptions.ResourceNotFoundException;
 import com.dandelion.backend.payloads.ProductBody;
+import com.dandelion.backend.payloads.ProductResponse;
 import com.dandelion.backend.payloads.dto.ProductDTO;
 import com.dandelion.backend.repositories.CategoryRepo;
 import com.dandelion.backend.repositories.ProductRepo;
 import com.dandelion.backend.services.ProductService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -114,21 +119,35 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductDTO> getAllProducts() {
+    public ProductResponse getAllProducts(Integer pageNumber, Integer pageSize, String sortBy, String sortDir) {
 
-        List<Product> products = productRepo.findAll();
+        Sort sort = sortDir.equalsIgnoreCase("asc") ?
+                Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+
+        Pageable paging = PageRequest.of(pageNumber, pageSize, sort);
+
+        Page<Product> pageProduct = productRepo.findAll(paging);
+        List<Product> products = pageProduct.getContent();
 
         List<ProductDTO> productDTOs = products.stream()
                 .map(item -> {
                     ProductDTO productDTO = modelMapper.map(item, ProductDTO.class);
-                    productDTO.setCategory(item.getCategory().getName());
-
+                    productDTO.setCategory(item.getCategory() == null ? null : item.getCategory().getName());
                     return productDTO;
 
                 })
                 .collect(Collectors.toList());
 
-        return productDTOs;
+        ProductResponse productResponse = ProductResponse.builder()
+                .content(productDTOs)
+                .pageNumber(pageProduct.getNumber())
+                .pageSize(pageProduct.getSize())
+                .totalElements(pageProduct.getTotalElements())
+                .totalPages(pageProduct.getTotalPages())
+                .lastPage(pageProduct.isLast())
+                .build();
+
+        return productResponse;
     }
 
     @Override
@@ -138,7 +157,7 @@ public class ProductServiceImpl implements ProductService {
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found with id = " + productId));
 
         ProductDTO productDTO = modelMapper.map(product, ProductDTO.class);
-        productDTO.setCategory(product.getCategory().getName());
+        productDTO.setCategory(product.getCategory() == null ? null : product.getCategory().getName());
 
         return productDTO;
     }
@@ -156,7 +175,12 @@ public class ProductServiceImpl implements ProductService {
         }
 
         List<ProductDTO> productDTOs = products.stream()
-                .map(item -> modelMapper.map(item, ProductDTO.class))
+                .map(item -> {
+                    ProductDTO productDTO = modelMapper.map(item, ProductDTO.class);
+                    productDTO.setCategory(item.getCategory() == null ? null : item.getCategory().getName());
+
+                    return productDTO;
+                })
                 .collect(Collectors.toList());
 
         return productDTOs;
@@ -171,7 +195,12 @@ public class ProductServiceImpl implements ProductService {
         }
 
         List<ProductDTO> productDTOs = products.stream()
-                .map(item -> modelMapper.map(item, ProductDTO.class))
+                .map(item -> {
+                    ProductDTO productDTO = modelMapper.map(item, ProductDTO.class);
+                    productDTO.setCategory(item.getCategory() == null ? null : item.getCategory().getName());
+
+                    return productDTO;
+                })
                 .collect(Collectors.toList());
 
         return productDTOs;
@@ -187,7 +216,12 @@ public class ProductServiceImpl implements ProductService {
         }
 
         List<ProductDTO> matchingProductsDTOs = matchingProducts.stream()
-                .map(item -> modelMapper.map(item, ProductDTO.class))
+                .map(item -> {
+                    ProductDTO productDTO = modelMapper.map(item, ProductDTO.class);
+                    productDTO.setCategory(item.getCategory() == null ? null : item.getCategory().getName());
+
+                    return productDTO;
+                })
                 .collect(Collectors.toList());
 
         return matchingProductsDTOs;
