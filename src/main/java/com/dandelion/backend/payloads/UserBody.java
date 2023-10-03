@@ -1,9 +1,7 @@
 package com.dandelion.backend.payloads;
 
 import com.dandelion.backend.entities.enumType.Gender;
-import com.dandelion.backend.entities.enumType.RoleBase;
 import com.dandelion.backend.utils.GenderDeserializer;
-import com.dandelion.backend.utils.RoleDeserializer;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import jakarta.validation.constraints.Email;
@@ -12,7 +10,6 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.util.Date;
-import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -46,6 +43,5 @@ public class UserBody {
 
     private Date blocked;
 
-    @JsonDeserialize(using = RoleDeserializer.class)
-    private List<RoleBase> roles;
+    private String role;
 }
