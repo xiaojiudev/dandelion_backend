@@ -1,6 +1,7 @@
 package com.dandelion.backend.controllers;
 
 
+import com.dandelion.backend.configs.AppConstants;
 import com.dandelion.backend.payloads.ApiResponse;
 import com.dandelion.backend.payloads.ProductBody;
 import com.dandelion.backend.payloads.ProductResponse;
@@ -47,10 +48,10 @@ public class ProductController {
     // get all
     @GetMapping("/products")
     public ResponseEntity<ProductResponse> getAllProducts(
-            @RequestParam(value = "page", defaultValue = "0", required = false) Integer pageNumber,
-            @RequestParam(value = "size", defaultValue = "3", required = false) Integer pageSize,
-            @RequestParam(value = "sortBy", defaultValue = "id", required = false) String sortBy,
-            @RequestParam(value = "sortDir", defaultValue = "asc", required = false) String sortDir
+            @RequestParam(value = "page", defaultValue = AppConstants.PAGE_NUMBER, required = false) Integer pageNumber,
+            @RequestParam(value = "size", defaultValue = AppConstants.PAGE_SIZE, required = false) Integer pageSize,
+            @RequestParam(value = "sortBy", defaultValue = AppConstants.SORT_BY, required = false) String sortBy,
+            @RequestParam(value = "sortDir", defaultValue = AppConstants.SORT_DIR, required = false) String sortDir
     ) {
         return new ResponseEntity<>(productService.getAllProducts(pageNumber, pageSize, sortBy, sortDir), HttpStatus.OK);
     }
