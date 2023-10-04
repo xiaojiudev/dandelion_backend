@@ -29,7 +29,7 @@ public class ShoppingCart {
     private User user;
 
     // One-to-Many with shopping_cart_-item table
-    @OneToMany(mappedBy = "shoppingCart")
+    @OneToMany(mappedBy = "shoppingCart", cascade = CascadeType.ALL)
     @ToString.Exclude
     @JsonProperty("shopping_cart_items")
     private List<ShoppingCartItem> shoppingCartItems = new ArrayList<>();
