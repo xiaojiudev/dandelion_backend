@@ -67,7 +67,7 @@ public class Address {
     private Date modifiedAt;
 
     // TODO: Define Relationship with Country, LocalUser
-    // Many-to-Many: with User table
+    // Many-to-One: with User table
 
     @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "user_id")
