@@ -93,9 +93,11 @@ update `user` set `user_authentication_id`= 3  where `user`.id = 3;
 select * from `user`;
 
 -- PRODUCT CATEGORIES
-insert into `category`(`name`) values("Fruits");
-insert into `category`(`name`) values("Vegetables");
-insert into `category`(`name`) values("Meats");
+insert into `category`(`name`) values("cate1");
+insert into `category`(`name`) values("cate2");
+insert into `category`(`name`) values("cate3");
+insert into `category`(`name`) values("cate4");
+insert into `category`(`name`) values("cate5");
 
 select * from `category`;
 
@@ -105,8 +107,45 @@ insert into `product`(`category_id`, `name`, `weight`, `quantity`, `media_url`, 
 insert into `product`(`category_id`, `name`, `weight`, `quantity`, `media_url`, `price`, `description`, `information`, `tag`) 
 	values("1", "EcoFlex Comfort Apple", 500, 1732, "https://i.ebayimg.com/images/g/uwcAAOSwiLdkNnoV/s-l1200.webp", 399, "this is desc", " this is information", "tag1,tag3"); 
 
-insert into `product`(`name`, `weight`, `quantity`, `media_url`, `price`, `description`, `information`, `tag`) 
-	values("EcoFlex Comfort Apple", 500, 1732, "https://i.ebayimg.com/images/g/uwcAAOSwiLdkNnoV/s-l1200.webp", 399, "this is desc", " this is information", "tag1,tag3"); 
+DELIMITER //
+CREATE PROCEDURE generateProducts(IN num_rows INT)
+BEGIN
+    DECLARE i INT DEFAULT 1;
+    DECLARE num_tags INT;
+    DECLARE random_tags VARCHAR(255);
+    WHILE i <= num_rows DO
+        SET num_tags = FLOOR(RAND() * 5) + 1;
+        SET random_tags = '';
+        
+        WHILE num_tags > 0 DO
+            SET random_tags = CONCAT(random_tags, 'tag', FLOOR(RAND() * 10) + 1); -- Generate tags from 1 to 9
+            SET num_tags = num_tags - 1;
+            
+            IF num_tags > 0 THEN
+                SET random_tags = CONCAT(random_tags, ',');
+            END IF;
+        END WHILE;
+        
+        INSERT INTO `product`(`category_id`, `name`, `weight`, `quantity`, `media_url`, `price`, `description`, `information`, `tag`)
+        VALUES
+            (FLOOR(RAND() * 5) + 1, 
+             CONCAT('Product ', FLOOR(RAND() * 1000 * i)), 
+             FLOOR(RAND() * 1000) + 100, 
+             FLOOR(RAND() * 1000) + 1, 
+             'https://i.ebayimg.com/images/g/uwcAAOSwiLdkNnoV/s-l1200.webp', 
+             FLOOR(RAND() * 500) + 50, 
+             CONCAT('This is description ', i), 
+             CONCAT('This is information ', i), 
+             random_tags);
+        SET i = i + 1;
+    END WHILE;
+    
+END //
+DELIMITER ;
+
+call generateProducts(100);
+
+
 
 
 select * from `product`; 
@@ -115,19 +154,20 @@ select * from `category`;
 
 
 -- SHOPPING CART
-insert into `shopping_cart`(`user_id`, `status`) values(1, true);
-insert into `shopping_cart`(`user_id`, `status`) values(2, true);
-insert into `shopping_cart`(`user_id`, `status`) values(3, true);
+-- insert into `shopping_cart`(`user_id`, `status`) values(1, true);
+-- insert into `shopping_cart`(`user_id`, `status`) values(2, true);
+-- insert into `shopping_cart`(`user_id`, `status`) values(3, true);
  
  select * from `shopping_cart`;
  
-insert into `shopping_cart_item`(`cart_id`, `product_id`, `quantity`) values(1, 1 , 5);
-insert into `shopping_cart_item`(`cart_id`, `product_id`, `quantity`) values(1, 2 , 3);
-insert into `shopping_cart_item`(`cart_id`, `product_id`, `quantity`) values(2, 1 , 8);
-insert into `shopping_cart_item`(`cart_id`, `product_id`, `quantity`) values(2, 2 , 10);
-insert into `shopping_cart_item`(`cart_id`, `product_id`, `quantity`) values(3, 1 , 2);
-insert into `shopping_cart_item`(`cart_id`, `product_id`, `quantity`) values(3, 2 , 5);
+-- insert into `shopping_cart_item`(`cart_id`, `product_id`, `quantity`) values(1, 1 , 5);
+-- insert into `shopping_cart_item`(`cart_id`, `product_id`, `quantity`) values(1, 2 , 3);
+-- insert into `shopping_cart_item`(`cart_id`, `product_id`, `quantity`) values(2, 1 , 8);
+-- insert into `shopping_cart_item`(`cart_id`, `product_id`, `quantity`) values(2, 2 , 10);
+-- insert into `shopping_cart_item`(`cart_id`, `product_id`, `quantity`) values(3, 1 , 2);
+-- insert into `shopping_cart_item`(`cart_id`, `product_id`, `quantity`) values(3, 2 , 5);
 
+select * from `shopping_cart`;
 select * from `shopping_cart_item`;
 
 -- ORDER STATUS

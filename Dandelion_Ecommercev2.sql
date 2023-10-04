@@ -1,4 +1,4 @@
--- drop database dandelion;
+drop database dandelion;
 create database if not exists dandelion;
 use dandelion;
 
@@ -94,7 +94,7 @@ CREATE TABLE `product` (
   `id` bigint PRIMARY KEY AUTO_INCREMENT,
   `category_id` bigint default null,
   `name` varchar(255) unique NOT NULL,
-  `weight` decimal(5,2) unsigned NOT NULL,
+  `weight` double(10,2) unsigned NOT NULL,
   `quantity` int unsigned NOT NULL default 0,
   `media_url` text NOT NULL,
   `price` decimal(10,2) NOT NULL,
@@ -126,8 +126,8 @@ CREATE TABLE `shopping_cart_item` (
   `id` bigint PRIMARY KEY AUTO_INCREMENT,
   `cart_id` bigint not null,
   `product_id` bigint not null,
-  `quantity` int unsigned NOT NULL default 1 check(`quantity` >= 1),
-  unique key `unique_cart_product` (`cart_id`, `product_id`)
+  `quantity` int unsigned NOT NULL default 1,
+  unique key (`cart_id`, `product_id`)
 ) engine=InnoDB default char set=utf8mb4;
 
 drop table if exists `shop_order`;
