@@ -6,6 +6,8 @@ import com.dandelion.backend.entities.ShoppingCartItem;
 import com.dandelion.backend.entities.User;
 import com.dandelion.backend.exceptions.ResourceNotFoundException;
 import com.dandelion.backend.payloads.AddToCartBody;
+import com.dandelion.backend.payloads.dto.CartDTO;
+import com.dandelion.backend.payloads.dto.CartDetailDTO;
 import com.dandelion.backend.repositories.CartItemRepo;
 import com.dandelion.backend.repositories.CartRepo;
 import com.dandelion.backend.repositories.ProductRepo;
@@ -15,7 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -33,14 +37,16 @@ public class CartServiceImpl implements CartService {
     @Override
     public void addToCart(Long userId, AddToCartBody addToCartBody) {
 
+        User user = userRepo.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found!"));
+
         Long productId = addToCartBody.getProductId();
+        Product product = productRepo.findById(productId)
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found!"));
+
         Integer quantity = (addToCartBody.getQuantity() != null && addToCartBody.getQuantity() > 0)
                 ? addToCartBody.getQuantity() : 1;
 
-        User user = userRepo.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found!"));
-        Product product = productRepo.findById(productId)
-                .orElseThrow(() -> new ResourceNotFoundException("Product not found!"));
         ShoppingCart cart = cartRepo.findByStatusAndUser_Id(true, user.getId())
                 .orElseGet(() -> {
                     ShoppingCart createdCart = new ShoppingCart();
@@ -58,7 +64,7 @@ public class CartServiceImpl implements CartService {
         // if exist increase quantity else add this product to cart
         if (existingItemOpt.isPresent()) {
             ShoppingCartItem existingItem = existingItemOpt.get();
-            existingItem.setQuantity(existingItem.getQuantity() + quantity);
+            existingItem.setQuantity(quantity);
             cartItemRepo.save(existingItem);
         } else {
             ShoppingCartItem cartItem = new ShoppingCartItem();
@@ -68,6 +74,80 @@ public class CartServiceImpl implements CartService {
 
             cartItemRepo.save(cartItem);
         }
-        
+
     }
+
+    @Override
+    public void removeAnItem(Long userId, Long productId) {
+        User user = userRepo.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found!"));
+
+        Product product = productRepo.findById(productId)
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found!"));
+
+        ShoppingCart cart = cartRepo.findByStatusAndUser_Id(true, user.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Cart not found!"));
+
+        ShoppingCartItem cartItem = cartItemRepo.findByShoppingCart_IdAndProduct_Id(cart.getId(), product.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Cart item not found"));
+
+        cartItemRepo.delete(cartItem);
+
+    }
+
+    @Override
+    public void removeAllItems(Long userId) {
+        User user = userRepo.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found!"));
+
+        ShoppingCart cart = cartRepo.findByStatusAndUser_Id(true, user.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Cart not found!"));
+
+        List<ShoppingCartItem> cartItems = cartItemRepo.findByShoppingCart_Id(cart.getId());
+
+        cartItemRepo.deleteAll(cartItems);
+
+    }
+
+    @Override
+    public CartDTO getDetailCart(Long userId) {
+        User user = userRepo.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found!"));
+        ShoppingCart userCart = cartRepo.findByStatusAndUser_Id(true, user.getId())
+                .orElseGet(() -> {
+                    ShoppingCart createdCart = new ShoppingCart();
+                    createdCart.setUser(user);
+                    createdCart.setStatus(true);
+
+                    return cartRepo.save(createdCart);
+                });
+
+        List<ShoppingCartItem> cartItems = cartItemRepo.findByShoppingCart_Id(userCart.getId());
+
+        List<CartDetailDTO> cartDetailDTOs = cartItems.stream()
+                .map(item -> {
+                    CartDetailDTO tempItem = new CartDetailDTO();
+                    Product tempProduct = item.getProduct();
+
+                    tempItem.setProductId(tempProduct.getId());
+                    tempItem.setName(tempProduct.getName());
+                    tempItem.setMediaUrl(tempProduct.getMediaUrl());
+                    tempItem.setPrice(tempProduct.getPrice());
+                    tempItem.setDescription(tempProduct.getDescription());
+                    tempItem.setInformation(tempProduct.getInformation());
+                    tempItem.setQuantity(item.getQuantity());
+
+                    return tempItem;
+                })
+                .collect(Collectors.toList());
+
+        CartDTO cartDTO = new CartDTO();
+        cartDTO.setUserId(user.getId());
+        cartDTO.setStatus(userCart.getStatus());
+        cartDTO.setItems(cartDetailDTOs);
+
+        return cartDTO;
+    }
+
+
 }
