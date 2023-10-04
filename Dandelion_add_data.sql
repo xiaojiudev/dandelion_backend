@@ -62,18 +62,6 @@ INSERT INTO `address` (`user_id`, `address_line_1`, `address_line_2`, `phone`, `
 
 select * from `address`;
 
--- USER ADDRESS
-insert into `user_address`(`user_id`, `address_id`) values(1, 1);
-insert into `user_address`(`user_id`, `address_id`) values(1, 2);
-insert into `user_address`(`user_id`, `address_id`) values(1, 3);
-insert into `user_address`(`user_id`, `address_id`) values(2, 1);
-insert into `user_address`(`user_id`, `address_id`) values(2, 2);
-insert into `user_address`(`user_id`, `address_id`) values(2, 3);
-insert into `user_address`(`user_id`, `address_id`) values(2, 4);
-insert into `user_address`(`user_id`, `address_id`) values(3, 1);
-insert into `user_address`(`user_id`, `address_id`) values(3, 5);
-
-select * from `user_address`;
 
 -- USER AUTHENTICATION
 INSERT INTO `user_authentication` (`token`) 

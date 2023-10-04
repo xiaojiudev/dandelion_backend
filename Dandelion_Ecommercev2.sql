@@ -1,4 +1,4 @@
-drop database dandelion;
+-- drop database dandelion;
 create database if not exists dandelion;
 use dandelion;
 
@@ -33,15 +33,8 @@ CREATE TABLE `address` (
   `country` varchar(255) default("Viet Nam"),
   `is_default` boolean DEFAULT false,
   `created_at` timestamp DEFAULT (now()),
-  `modified_at` timestamp DEFAULT null
-) engine=InnoDB default char set=utf8mb4;
-
-drop table if exists `user_address`;
-
-CREATE TABLE `user_address` (
-  `user_id` bigint,
-  `address_id` bigint,
-  primary key (`user_id`, `address_id`)
+  `modified_at` timestamp DEFAULT null,
+  unique key (`user_id`, `address_line_1`)
 ) engine=InnoDB default char set=utf8mb4;
 
 drop table if exists `user_payment_method`;
