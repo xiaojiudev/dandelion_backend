@@ -18,7 +18,7 @@ public class ProductDTO {
 
     private String name;
 
-    private BigDecimal weight;
+    private Double weight;
 
     private Integer quantity;
 

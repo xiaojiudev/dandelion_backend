@@ -20,8 +20,8 @@ public class ProductBody {
     @NotBlank(message = "Name not blank!")
     @Size(min = 5, message = "Name at least 5 characters")
     private String name;
-    
-    private BigDecimal weight;
+
+    private Double weight;
 
     private Integer quantity;
 

@@ -28,8 +28,8 @@ public class Product {
     @Column(name = "name", nullable = false, unique = true)
     private String name;
 
-    @Column(name = "weight", nullable = false, precision = 5, scale = 2)
-    private BigDecimal weight;
+    @Column(name = "weight", nullable = false, precision = 10, scale = 2)
+    private Double weight;
 
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
