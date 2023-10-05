@@ -10,14 +10,14 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-@Table(name = "payment_type")
+@Table(name = "payment_method")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @ToString
 @Builder
-public class PaymentType {
+public class PaymentMethod {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -50,7 +50,7 @@ public class PaymentType {
     private Date modifiedAt;
 
     // Many-to-Many: with User table
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH}, mappedBy = "paymentTypes")
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH}, mappedBy = "paymentMethods")
     @ToString.Exclude
     private List<User> users = new ArrayList<>();
 

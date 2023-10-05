@@ -73,10 +73,10 @@ public class User {
     @ManyToMany(cascade = {CascadeType.ALL})
     @JoinTable(name = "user_payment_method",
             joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "payment_type_id"))
+            inverseJoinColumns = @JoinColumn(name = "payment_method_id"))
     @ToString.Exclude
-    @JsonProperty("payment_types")
-    private List<PaymentType> paymentTypes = new ArrayList<>();
+    @JsonProperty("payment_methods")
+    private List<PaymentMethod> paymentMethods = new ArrayList<>();
 
 
     // Many-to-Many: with Role table - user_role
