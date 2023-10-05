@@ -41,13 +41,13 @@ drop table if exists `user_payment_method`;
 
 CREATE TABLE `user_payment_method` (
   `user_id` bigint,
-  `payment_type_id` bigint,
-  primary key(`user_id`, `payment_type_id`)
+  `payment_method_id` bigint,
+  primary key(`user_id`, `payment_method_id`)
 ) engine=InnoDB default char set=utf8mb4;
 
-drop table if exists `payment_type`;
+drop table if exists `payment_method`;
 
-CREATE TABLE `payment_type` (
+CREATE TABLE `payment_method` (
   `id` bigint PRIMARY KEY AUTO_INCREMENT,
   `name` varchar(50) NOT NULL,
   `provider` varchar(255) DEFAULT null,
@@ -218,7 +218,7 @@ ALTER TABLE `address` ADD FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
 
 ALTER TABLE `user_payment_method` ADD FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
 
-ALTER TABLE `user_payment_method` ADD FOREIGN KEY (`payment_type_id`) REFERENCES `payment_type` (`id`);
+ALTER TABLE `user_payment_method` ADD FOREIGN KEY (`payment_method_id`) REFERENCES `payment_method` (`id`);
 
 ALTER TABLE `user_role` ADD FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
 

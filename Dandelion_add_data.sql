@@ -31,21 +31,22 @@ select * from `user`;
 select * from `user_role`;
 
 -- PAYMENT TYPE
-insert into `payment_type`(`name`) values('COD');
-INSERT INTO `payment_type` (`name`, `provider`, `account_no`, `expiry_date`) VALUES ('Credit Card', 'Visa', '1234567890123456', '2024-12-31');
-INSERT INTO `payment_type` (`name`, `provider`, `account_no`, `expiry_date`) VALUES ('Debit Card', 'MasterCard', '9876543210987654', '2023-10-15');
-INSERT INTO `payment_type` (`name`, `provider`, `account_no`, `expiry_date`) VALUES ('PayPal', 'PayPal Inc.', 'paypal@example.com', '2024-06-30');
-INSERT INTO `payment_type` (`name`, `provider`, `account_no`, `expiry_date`) VALUES ('Bank Transfer', 'ABC Bank', 'ABC123456789', '2023-09-25');
+insert into `payment_method`(`name`, `is_default`) values('COD', true);
+INSERT INTO `payment_method` (`name`, `provider`, `account_no`, `expiry_date`) VALUES ('Credit Card', 'Visa', '1234567890123456', '2024-12-31');
+INSERT INTO `payment_method` (`name`, `provider`, `account_no`, `expiry_date`) VALUES ('Debit Card', 'MasterCard', '9876543210987654', '2023-10-15');
+INSERT INTO `payment_method` (`name`, `provider`, `account_no`, `expiry_date`) VALUES ('PayPal', 'PayPal Inc.', 'paypal@example.com', '2024-06-30');
+INSERT INTO `payment_method` (`name`, `provider`, `account_no`, `expiry_date`) VALUES ('Bank Transfer', 'ABC Bank', 'ABC123456789', '2023-09-25');
 
-select * from `payment_type`;
+select * from `payment_method`;
 
 -- PAYMENT METHOD
-insert into `user_payment_method`(`user_id`, `payment_type_id`) values(1, 1);
-insert into `user_payment_method`(`user_id`, `payment_type_id`) values(1, 2);
-insert into `user_payment_method`(`user_id`, `payment_type_id`) values(2, 3);
-insert into `user_payment_method`(`user_id`, `payment_type_id`) values(2, 4);
-insert into `user_payment_method`(`user_id`, `payment_type_id`) values(3, 5);
+insert into `user_payment_method`(`user_id`, `payment_method_id`) values(1, 1);
+insert into `user_payment_method`(`user_id`, `payment_method_id`) values(1, 2);
+insert into `user_payment_method`(`user_id`, `payment_method_id`) values(2, 3);
+insert into `user_payment_method`(`user_id`, `payment_method_id`) values(2, 4);
+insert into `user_payment_method`(`user_id`, `payment_method_id`) values(3, 5);
 
+select * from `payment_method`;
 select * from `user_payment_method`;
 
 -- ADDRESS
@@ -142,19 +143,7 @@ select * from `category`;
 
 
 -- SHOPPING CART
--- insert into `shopping_cart`(`user_id`, `status`) values(1, true);
--- insert into `shopping_cart`(`user_id`, `status`) values(2, true);
--- insert into `shopping_cart`(`user_id`, `status`) values(3, true);
  
- select * from `shopping_cart`;
- 
--- insert into `shopping_cart_item`(`cart_id`, `product_id`, `quantity`) values(1, 1 , 5);
--- insert into `shopping_cart_item`(`cart_id`, `product_id`, `quantity`) values(1, 2 , 3);
--- insert into `shopping_cart_item`(`cart_id`, `product_id`, `quantity`) values(2, 1 , 8);
--- insert into `shopping_cart_item`(`cart_id`, `product_id`, `quantity`) values(2, 2 , 10);
--- insert into `shopping_cart_item`(`cart_id`, `product_id`, `quantity`) values(3, 1 , 2);
--- insert into `shopping_cart_item`(`cart_id`, `product_id`, `quantity`) values(3, 2 , 5);
-
 select * from `shopping_cart`;
 select * from `shopping_cart_item`;
 
