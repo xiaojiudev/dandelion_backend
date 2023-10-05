@@ -17,8 +17,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 @Service
@@ -64,7 +66,7 @@ public class CartServiceImpl implements CartService {
         // if exist increase quantity else add this product to cart
         if (existingItemOpt.isPresent()) {
             ShoppingCartItem existingItem = existingItemOpt.get();
-            existingItem.setQuantity(quantity);
+            existingItem.setQuantity(quantity + existingItem.getQuantity());
             cartItemRepo.save(existingItem);
         } else {
             ShoppingCartItem cartItem = new ShoppingCartItem();
@@ -122,6 +124,9 @@ public class CartServiceImpl implements CartService {
                     return cartRepo.save(createdCart);
                 });
 
+        // Calculate Merchandise Subtotal
+        AtomicReference<BigDecimal> merchandiseSubtotal = new AtomicReference<>(BigDecimal.ZERO);
+
         List<ShoppingCartItem> cartItems = cartItemRepo.findByShoppingCart_Id(userCart.getId());
 
         List<CartDetailDTO> cartDetailDTOs = cartItems.stream()
@@ -129,21 +134,31 @@ public class CartServiceImpl implements CartService {
                     CartDetailDTO tempItem = new CartDetailDTO();
                     Product tempProduct = item.getProduct();
 
+                    Integer quantity = item.getQuantity();
+                    BigDecimal price = tempProduct.getPrice();
+                    BigDecimal itemSubTotal = new BigDecimal(quantity).multiply(price);
+
+                    // Update totalFee using AtomicReference
+                    merchandiseSubtotal.updateAndGet(oldTotal -> oldTotal.add(itemSubTotal));
+
                     tempItem.setProductId(tempProduct.getId());
                     tempItem.setName(tempProduct.getName());
                     tempItem.setMediaUrl(tempProduct.getMediaUrl());
-                    tempItem.setPrice(tempProduct.getPrice());
+                    tempItem.setPrice(price);
                     tempItem.setDescription(tempProduct.getDescription());
                     tempItem.setInformation(tempProduct.getInformation());
-                    tempItem.setQuantity(item.getQuantity());
+                    tempItem.setQuantity(quantity);
+                    tempItem.setItemSubTotal(itemSubTotal);
 
                     return tempItem;
                 })
                 .collect(Collectors.toList());
 
         CartDTO cartDTO = new CartDTO();
+
         cartDTO.setUserId(user.getId());
         cartDTO.setStatus(userCart.getStatus());
+        cartDTO.setMerchandiseSubtotal(merchandiseSubtotal.get()); // Get the totalFee value from AtomicReference
         cartDTO.setItems(cartDetailDTOs);
 
         return cartDTO;
