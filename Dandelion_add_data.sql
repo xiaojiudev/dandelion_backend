@@ -31,35 +31,21 @@ select * from `user`;
 select * from `user_role`;
 
 -- PAYMENT TYPE
-insert into `payment_method`(`name`, `is_default`) values('COD', true);
-INSERT INTO `payment_method` (`name`, `provider`, `account_no`, `expiry_date`) VALUES ('Credit Card', 'Visa', '1234567890123456', '2024-12-31');
-INSERT INTO `payment_method` (`name`, `provider`, `account_no`, `expiry_date`) VALUES ('Debit Card', 'MasterCard', '9876543210987654', '2023-10-15');
-INSERT INTO `payment_method` (`name`, `provider`, `account_no`, `expiry_date`) VALUES ('PayPal', 'PayPal Inc.', 'paypal@example.com', '2024-06-30');
-INSERT INTO `payment_method` (`name`, `provider`, `account_no`, `expiry_date`) VALUES ('Bank Transfer', 'ABC Bank', 'ABC123456789', '2023-09-25');
-
+insert into `payment_method`(`name`, `is_enabled`) values('COD', true);
 select * from `payment_method`;
 
--- PAYMENT METHOD
-insert into `user_payment_method`(`user_id`, `payment_method_id`) values(1, 1);
-insert into `user_payment_method`(`user_id`, `payment_method_id`) values(1, 2);
-insert into `user_payment_method`(`user_id`, `payment_method_id`) values(2, 3);
-insert into `user_payment_method`(`user_id`, `payment_method_id`) values(2, 4);
-insert into `user_payment_method`(`user_id`, `payment_method_id`) values(3, 5);
-
-select * from `payment_method`;
-select * from `user_payment_method`;
 
 -- ADDRESS
-INSERT INTO `address` (`user_id`, `address_line_1`, `address_line_2`, `phone`, `city`, `district`, `ward`, `postal_code`, `country`) 
-	VALUES (1, '123 Nguyen Van A Street', 'Apartment 4B', '0123456789', 'Ho Chi Minh City', 'District 1', 'Phuong Tan Dinh', '700000', 'Viet Nam');
-INSERT INTO `address` (`user_id`, `address_line_1`, `address_line_2`, `phone`, `city`, `district`, `ward`, `postal_code`, `country`) 
-	VALUES (1, '456 Le Loi Avenue', NULL, '0987654321', 'Hanoi', 'Ba Dinh', 'Phuong Quoc Tu Giam', '100000', 'Viet Nam');
-INSERT INTO `address` (`user_id`, `address_line_1`, `address_line_2`, `phone`, `city`, `district`, `ward`, `postal_code`, `country`) 
-	VALUES (2, '789 Tran Hung Dao Street', NULL, '0771234567', 'Da Nang', 'Hai Chau', 'Phuong Hai Chau 1', '550000', 'Viet Nam');
-INSERT INTO `address` (`user_id`, `address_line_1`, `address_line_2`, `phone`, `city`, `district`, `ward`, `postal_code`, `country`) 
-	VALUES (2, '101 Vo Van Tan Road', 'Apartment 7C', '0909876543', 'Can Tho', 'Ninh Kieu', 'Phuong An Binh', '920000', 'Viet Nam');
-INSERT INTO `address` (`user_id`, `address_line_1`, `address_line_2`, `phone`, `city`, `district`, `ward`, `postal_code`, `country`) 
-	VALUES (3, '222 Tran Phu Street', NULL, '0881122334', 'Hue', 'Phuong Vinh Ninh', 'Phuong Ninh Phong', '530000', 'Viet Nam');
+INSERT INTO `address` (`user_id`, `address_line_1`, `address_line_2`, `phone`, `city`, `district`, `ward`, `postal_code`, `country` , `is_default`) 
+	VALUES (1, '123 Nguyen Van A Street', 'Apartment 4B', '0123456789', 'Ho Chi Minh City', 'District 1', 'Phuong Tan Dinh', '700000', 'Viet Nam', 1);
+INSERT INTO `address` (`user_id`, `address_line_1`, `address_line_2`, `phone`, `city`, `district`, `ward`, `postal_code`, `country`, `is_default`) 
+	VALUES (1, '456 Le Loi Avenue', NULL, '0987654321', 'Hanoi', 'Ba Dinh', 'Phuong Quoc Tu Giam', '100000', 'Viet Nam', 0);
+INSERT INTO `address` (`user_id`, `address_line_1`, `address_line_2`, `phone`, `city`, `district`, `ward`, `postal_code`, `country`, `is_default`) 
+	VALUES (2, '789 Tran Hung Dao Street', NULL, '0771234567', 'Da Nang', 'Hai Chau', 'Phuong Hai Chau 1', '550000', 'Viet Nam', 1);
+INSERT INTO `address` (`user_id`, `address_line_1`, `address_line_2`, `phone`, `city`, `district`, `ward`, `postal_code`, `country`, `is_default`) 
+	VALUES (2, '101 Vo Van Tan Road', 'Apartment 7C', '0909876543', 'Can Tho', 'Ninh Kieu', 'Phuong An Binh', '920000', 'Viet Nam', 0);
+INSERT INTO `address` (`user_id`, `address_line_1`, `address_line_2`, `phone`, `city`, `district`, `ward`, `postal_code`, `country`, `is_default`) 
+	VALUES (3, '222 Tran Phu Street', NULL, '0881122334', 'Hue', 'Phuong Vinh Ninh', 'Phuong Ninh Phong', '530000', 'Viet Nam', 1);
 
 select * from `address`;
 
@@ -167,9 +153,8 @@ INSERT INTO `shipping_method` (`name`, `price`) VALUES ('Free Shipping', 0.00);
 select * from `shipping_method`;
 
 -- SHOP ORDER
-INSERT INTO `shop_order` (`user_id`, `payment_method`, `shipping_address`,`order_user_fullname`, 
-  `order_user_phone`, `order_user_email`, `shipping_method_id`, `order_total`, `order_status_id`, `order_tracking_number`)
-VALUES (1, 'COD', '123 Nguyen Van A Street', 'Ly Dai Phat', '0326423996', 'ldphat99@gmail.com', 2, 898.00, 4, 'TRACK123456');
+INSERT INTO `shop_order` (`user_id`, `order_transaction_id`, `user_comment`, `user_phone`, `shipping_address`, `shipping_method_id`, `merchandise_total`, `total`, `order_status_id`, `tracking_code`)
+VALUES (1, null, 'comment', '0326423996', '123 Nguyen Van A Street', 2, 898.00, 900.00, 4, 'TRACK123456');
 
 select * from `shop_order`;
 

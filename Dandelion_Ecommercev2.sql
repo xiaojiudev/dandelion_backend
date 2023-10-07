@@ -37,27 +37,6 @@ CREATE TABLE `address` (
   unique key (`user_id`, `address_line_1`)
 ) engine=InnoDB default char set=utf8mb4;
 
-drop table if exists `user_payment_method`;
-
-CREATE TABLE `user_payment_method` (
-  `user_id` bigint,
-  `payment_method_id` bigint,
-  primary key(`user_id`, `payment_method_id`)
-) engine=InnoDB default char set=utf8mb4;
-
-drop table if exists `payment_method`;
-
-CREATE TABLE `payment_method` (
-  `id` bigint PRIMARY KEY AUTO_INCREMENT,
-  `name` varchar(50) NOT NULL,
-  `provider` varchar(255) DEFAULT null,
-  `account_no` varchar(100) unique DEFAULT null,
-  `expiry_date` date DEFAULT null,
-  `is_default` boolean DEFAULT false,
-  `created_at` timestamp DEFAULT (now()),
-  `modified_at` timestamp DEFAULT null
-) engine=InnoDB default char set=utf8mb4;
-
 drop table if exists `role`;
 
 CREATE TABLE `role` (
@@ -127,17 +106,18 @@ drop table if exists `shop_order`;
 
 CREATE TABLE `shop_order` (
   `id` bigint PRIMARY KEY AUTO_INCREMENT,
-  `user_id` bigint not null,
-  `order_date` timestamp not null DEFAULT (now()),
-  `payment_method` varchar(50) NOT NULL,
-  `shipping_address` varchar(255) NOT NULL,
-  `order_user_fullname` varchar(50) NOT NULL,
-  `order_user_phone` varchar(20) NOT NULL,
-  `order_user_email` varchar(255) NOT NULL,
+  `user_id` bigint not null, 
   `shipping_method_id` bigint not null,
-  `order_total` decimal(10,2) unsigned NOT NULL,
+  `order_transaction_id` bigint null,
   `order_status_id` bigint not null,
-  `order_tracking_number` varchar(50) unique not null
+  `user_comment` varchar(255) null, 
+  `user_phone` varchar(20) NOT NULL,
+  `shipping_address` varchar(255) NOT NULL,
+  `merchandise_total` decimal(10,2) unsigned NOT NULL,
+  `total` decimal(10,2) unsigned NOT NULL,
+  `tracking_code` varchar(50) unique not null,
+  `created_at` timestamp DEFAULT (now()),
+  `modified_at` timestamp DEFAULT null
 ) engine=InnoDB default char set=utf8mb4;
 
 drop table if exists `order_detail`;
@@ -149,6 +129,27 @@ CREATE TABLE `order_detail` (
   `quantity` int unsigned NOT NULL default 1 check(`quantity` >= 1),
   `price` decimal(10,2) unsigned not null
 ) engine=InnoDB default char set=utf8mb4;
+
+drop table if exists `order_transaction`;
+
+CREATE TABLE `order_transaction` (
+  `id` bigint PRIMARY KEY AUTO_INCREMENT,
+  `payment_method_id` bigint not null,
+  `transaction_status` ENUM ('PENDING', 'FAILED', 'SUCCESS'),
+  `transaction_amount` decimal(10,2) NOT NULL,
+  `created_at` timestamp DEFAULT (now()),
+  `modified_at` timestamp DEFAULT null
+);
+
+
+drop table if exists `payment_method`;
+
+CREATE TABLE `payment_method` (
+  `id` bigint PRIMARY KEY AUTO_INCREMENT,
+  `name` varchar(255) unique NOT NULL,
+  `is_enabled` boolean not null
+) engine=InnoDB default char set=utf8mb4;
+
 
 drop table if exists `shipping_method`;
 
@@ -210,15 +211,9 @@ CREATE TABLE `promotion_product` (
   primary key (`product_id`, `promotion_id`)
 ) engine=InnoDB default char set=utf8mb4;
 
-
-
 ALTER TABLE `user` ADD FOREIGN KEY (`user_authentication_id`) REFERENCES `user_authentication` (`id`);
 
 ALTER TABLE `address` ADD FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
-
-ALTER TABLE `user_payment_method` ADD FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
-
-ALTER TABLE `user_payment_method` ADD FOREIGN KEY (`payment_method_id`) REFERENCES `payment_method` (`id`);
 
 ALTER TABLE `user_role` ADD FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
 
@@ -237,6 +232,10 @@ ALTER TABLE `shop_order` ADD FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
 ALTER TABLE `shop_order` ADD FOREIGN KEY (`shipping_method_id`) REFERENCES `shipping_method` (`id`);
 
 ALTER TABLE `shop_order` ADD FOREIGN KEY (`order_status_id`) REFERENCES `order_status` (`id`);
+
+ALTER TABLE `shop_order` ADD FOREIGN KEY (`order_transaction_id`) REFERENCES `order_transaction` (`id`);
+
+ALTER TABLE `order_transaction` ADD FOREIGN KEY (`payment_method_id`) REFERENCES `payment_method` (`id`);
 
 ALTER TABLE `order_detail` ADD FOREIGN KEY (`product_id`) REFERENCES `product` (`id`);
 
