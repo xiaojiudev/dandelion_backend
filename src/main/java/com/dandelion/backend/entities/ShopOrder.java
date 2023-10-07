@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -25,39 +26,38 @@ public class ShopOrder {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @CreationTimestamp
-    @Column(name = "order_date", nullable = false)
-    @JsonProperty("order_date")
-    private Date orderDate;
+    @Column(name = "user_comment")
+    @JsonProperty("user_comment")
+    private String userComment;
 
-    @Column(name = "payment_method", nullable = false, length = 50)
-    @JsonProperty("payment_method")
-    private String paymentMethod;
+    @Column(name = "user_phone")
+    @JsonProperty("user_phone")
+    private String userPhone;
 
     @Column(name = "shipping_address", nullable = false)
     @JsonProperty("shipping_address")
     private String shippingAddress;
 
-    @Column(name = "order_user_fullname", nullable = false, length = 50)
-    @JsonProperty("order_user_fullname")
-    private String orderUserFullname;
+    @Column(name = "merchandise_total", nullable = false, precision = 10, scale = 2)
+    @JsonProperty("merchandise_total")
+    private BigDecimal merchandiseTotal;
 
-    @Column(name = "order_user_phone", nullable = false, length = 20)
-    @JsonProperty("order_user_phone")
-    private String orderUserPhone;
+    @Column(name = "total", nullable = false, precision = 10, scale = 2)
+    private BigDecimal total;
 
-    @Column(name = "order_user_email", nullable = false)
-    @JsonProperty("order_user_email")
-    private String orderUserEmail;
+    @Column(name = "tracking_code", nullable = false, unique = true, length = 50)
+    @JsonProperty("tracking_code")
+    private String trackingCode;
 
-    @Column(name = "order_total", nullable = false, precision = 10, scale = 2)
-    @JsonProperty("order_total")
-    private BigDecimal orderTotal;
+    @Column(name = "created_at", updatable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    @CreationTimestamp
+    private Date createdAt;
 
-    @Column(name = "order_tracking_number", nullable = false, unique = true, length = 50)
-    @JsonProperty("order_tracking_number")
-    private String orderTrackingNumber;
+    @Column(name = "modified_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    @UpdateTimestamp
+    private Date modifiedAt;
 
     // TODO: Define Relationship with ShippingMethod, OrderStatus, OrderDetail
 
@@ -83,5 +83,10 @@ public class ShopOrder {
     @OneToMany(mappedBy = "shopOrder", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @ToString.Exclude
     private List<OrderDetail> orderDetails = new ArrayList<>();
+
+
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "order_transaction_id")
+    private OrderTransaction orderTransaction;
 
 }
