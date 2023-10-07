@@ -16,12 +16,8 @@ public class CartDTO {
 
     private Long userId;
     private Boolean status;
-    @JsonProperty("merchandise_subtotal")
-    private BigDecimal merchandiseSubtotal;
-    @JsonProperty("shipping_total")
-    private BigDecimal shippingTotal;
-    @JsonProperty("total_payment")
-    private BigDecimal totalPayment;
+    @JsonProperty("merchandise_total")
+    private BigDecimal merchandiseTotal;
     private List<CartDetailDTO> items;
 
 }

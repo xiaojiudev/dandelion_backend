@@ -1,6 +1,5 @@
 package com.dandelion.backend.services.impl;
 
-import com.dandelion.backend.entities.PaymentMethod;
 import com.dandelion.backend.entities.Role;
 import com.dandelion.backend.entities.User;
 import com.dandelion.backend.entities.enumType.RoleBase;
@@ -8,7 +7,6 @@ import com.dandelion.backend.exceptions.ResourceAlreadyExistsException;
 import com.dandelion.backend.exceptions.ResourceNotFoundException;
 import com.dandelion.backend.payloads.UserBody;
 import com.dandelion.backend.payloads.dto.UserDTO;
-import com.dandelion.backend.repositories.PaymentMethodRepo;
 import com.dandelion.backend.repositories.RoleRepo;
 import com.dandelion.backend.repositories.UserRepo;
 import com.dandelion.backend.services.EncryptionService;
@@ -31,7 +29,6 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepo userRepo;
     private final RoleRepo roleRepo;
-    private final PaymentMethodRepo paymentMethodRepo;
     private final ModelMapper modelMapper;
     private final EncryptionService encryptionService;
 
@@ -45,15 +42,6 @@ public class UserServiceImpl implements UserService {
         }
 
         List<Role> userRoles = getUserRoleHelper(userBody.getRole());
-        PaymentMethod defaultMethod = paymentMethodRepo.findByNameIgnoreCase("COD")
-                .orElseGet(() -> {
-                            PaymentMethod createDefaultPaymentMethod = PaymentMethod.builder()
-                                    .name("COD")
-                                    .isDefault(true)
-                                    .build();
-                            return paymentMethodRepo.save(createDefaultPaymentMethod);
-                        }
-                );
 
         User user = User.builder()
                 .email(userBody.getEmail())
@@ -63,7 +51,6 @@ public class UserServiceImpl implements UserService {
                 .gender(userBody.getGender())
                 .avatar(userBody.getAvatar())
                 .roles(userRoles)
-                .paymentMethods(List.of(defaultMethod))
                 .build();
 
         User savedUser = userRepo.save(user);
@@ -137,11 +124,8 @@ public class UserServiceImpl implements UserService {
         User user = userRepo.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id = " + userId));
 
-        user.setPaymentMethods(null);
-
         userRepo.delete(user);
-
-
+        
     }
 
     private List<Role> getUserRoleHelper(String roleBody) {

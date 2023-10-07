@@ -1,10 +1,8 @@
 package com.dandelion.backend.entities;
 
-import com.dandelion.backend.entities.enumType.Status;
+import com.dandelion.backend.entities.enumType.Order;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +11,9 @@ import java.util.List;
 @Setter
 @Entity
 @Table(name = "order_status")
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class OrderStatus {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,7 +22,7 @@ public class OrderStatus {
 
     @Column(name = "status", nullable = false, unique = true)
     @Enumerated(EnumType.STRING)
-    private Status status;
+    private Order status;
 
     // One-to-Many with shop_order table
     @OneToMany(mappedBy = "orderStatus", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})

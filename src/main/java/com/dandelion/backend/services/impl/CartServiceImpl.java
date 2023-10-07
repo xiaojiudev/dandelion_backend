@@ -13,7 +13,7 @@ import com.dandelion.backend.repositories.CartRepo;
 import com.dandelion.backend.repositories.ProductRepo;
 import com.dandelion.backend.repositories.UserRepo;
 import com.dandelion.backend.services.CartService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,16 +25,17 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class CartServiceImpl implements CartService {
 
-    @Autowired
-    private UserRepo userRepo;
-    @Autowired
-    private ProductRepo productRepo;
-    @Autowired
-    private CartRepo cartRepo;
-    @Autowired
-    private CartItemRepo cartItemRepo;
+
+    private final UserRepo userRepo;
+
+    private final ProductRepo productRepo;
+
+    private final CartRepo cartRepo;
+
+    private final CartItemRepo cartItemRepo;
 
     @Override
     public void addToCart(Long userId, AddToCartBody addToCartBody) {
@@ -125,7 +126,7 @@ public class CartServiceImpl implements CartService {
                 });
 
         // Calculate Merchandise Subtotal
-        AtomicReference<BigDecimal> merchandiseSubtotal = new AtomicReference<>(BigDecimal.ZERO);
+        AtomicReference<BigDecimal> merchandiseTotal = new AtomicReference<>(BigDecimal.ZERO);
 
         List<ShoppingCartItem> cartItems = cartItemRepo.findByShoppingCart_Id(userCart.getId());
 
@@ -139,7 +140,7 @@ public class CartServiceImpl implements CartService {
                     BigDecimal itemSubTotal = new BigDecimal(quantity).multiply(price);
 
                     // Update totalFee using AtomicReference
-                    merchandiseSubtotal.updateAndGet(oldTotal -> oldTotal.add(itemSubTotal));
+                    merchandiseTotal.updateAndGet(oldTotal -> oldTotal.add(itemSubTotal));
 
                     tempItem.setProductId(tempProduct.getId());
                     tempItem.setName(tempProduct.getName());
@@ -158,7 +159,7 @@ public class CartServiceImpl implements CartService {
 
         cartDTO.setUserId(user.getId());
         cartDTO.setStatus(userCart.getStatus());
-        cartDTO.setMerchandiseSubtotal(merchandiseSubtotal.get()); // Get the totalFee value from AtomicReference
+        cartDTO.setMerchandiseTotal(merchandiseTotal.get()); // Get the totalFee value from AtomicReference
         cartDTO.setItems(cartDetailDTOs);
 
         return cartDTO;

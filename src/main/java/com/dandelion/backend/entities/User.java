@@ -68,17 +68,7 @@ public class User {
     @ToString.Exclude
     @JsonIgnore
     private UserAuthentication userAuthentication;
-
-    // Many-to-Many: with PaymentType table - user_payment_method
-    @ManyToMany(cascade = {CascadeType.ALL})
-    @JoinTable(name = "user_payment_method",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "payment_method_id"))
-    @ToString.Exclude
-    @JsonProperty("payment_methods")
-    private List<PaymentMethod> paymentMethods = new ArrayList<>();
-
-
+    
     // Many-to-Many: with Role table - user_role
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     @JoinTable(name = "user_role",

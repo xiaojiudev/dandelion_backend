@@ -19,7 +19,7 @@ public class CartController {
     @Autowired
     private CartService cartService;
 
-    @PostMapping("/user/{userId}/carts")
+    @PostMapping("/users/{userId}/carts")
     public ResponseEntity<ApiResponse> addToCart(
             @PathVariable("userId") Long userId,
             @RequestBody AddToCartBody addToCartBody) {
@@ -28,7 +28,7 @@ public class CartController {
         return new ResponseEntity<>(new ApiResponse("Item added to the cart successfully", true), HttpStatus.OK);
     }
 
-    @DeleteMapping("/user/{userId}/carts/remove/{cartItemId}")
+    @DeleteMapping("/users/{userId}/carts/remove/{cartItemId}")
     public ResponseEntity<ApiResponse> removeAnItem(
             @PathVariable("userId") Long userId,
             @PathVariable("cartItemId") Long cartItemId) {
@@ -37,14 +37,14 @@ public class CartController {
         return new ResponseEntity<>(new ApiResponse("Delete item successfully", true), HttpStatus.OK);
     }
 
-    @DeleteMapping("/user/{userId}/carts/remove")
+    @DeleteMapping("/users/{userId}/carts/remove")
     public ResponseEntity<ApiResponse> removeAllItems(@PathVariable("userId") Long userId) {
         cartService.removeAllItems(userId);
 
         return new ResponseEntity<>(new ApiResponse("Delete all items successfully", true), HttpStatus.OK);
     }
 
-    @GetMapping("/user/{userId}/carts")
+    @GetMapping("/users/{userId}/carts")
     public ResponseEntity<CartDTO> getDetailCart(@PathVariable("userId") Long userId) {
 
         return new ResponseEntity<>(cartService.getDetailCart(userId), HttpStatus.OK);
