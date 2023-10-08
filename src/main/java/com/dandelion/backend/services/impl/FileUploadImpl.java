@@ -25,8 +25,22 @@ public class FileUploadImpl implements FileUpload {
         String uniqueId = UUID.randomUUID().toString();
         String publicId = folderName + "/" + uniqueId;
 
+        // Determine the resource type based on the file's content type
+        String resourceType = "auto";
+
+        if (multipartFile.getContentType() != null) {
+            if (multipartFile.getContentType().startsWith("image")) {
+                resourceType = "image";
+            } else if (multipartFile.getContentType().startsWith("video")) {
+                resourceType = "video";
+            }
+        }
+
         Map<?, ?> uploadResult = cloudinary.uploader()
-                .upload(multipartFile.getBytes(), Map.of("public_id", publicId));
+                .upload(multipartFile.getBytes(), ObjectUtils.asMap(
+                        "public_id", publicId,
+                        "resource_type", resourceType
+                ));
 
         String url = uploadResult.get("url").toString();
 
