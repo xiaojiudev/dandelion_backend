@@ -16,14 +16,13 @@ import java.util.UUID;
 public class FileUploadImpl implements FileUpload {
 
     private final Cloudinary cloudinary;
+    private static final String FOLDER_NAME = "uploads";
 
     @Override
     public String uploadFile(MultipartFile multipartFile) throws IOException {
 
-        String folderName = "uploads";
-
         String uniqueId = UUID.randomUUID().toString();
-        String publicId = folderName + "/" + uniqueId;
+        String publicId = FOLDER_NAME + "/" + uniqueId;
 
         // Determine the resource type based on the file's content type
         String resourceType = "auto";
@@ -58,5 +57,18 @@ public class FileUploadImpl implements FileUpload {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public String extractPublicId(String url) {
+
+        Integer firstIndex = url.indexOf(FOLDER_NAME);
+        Integer lastIndex = url.lastIndexOf(".");
+
+        if (url != null) {
+            return url.substring(firstIndex, lastIndex);
+        }
+
+        return null;
     }
 }

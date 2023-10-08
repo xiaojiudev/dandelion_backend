@@ -11,9 +11,9 @@ import java.util.List;
 public interface ProductService {
     ProductDTO createProduct(MultipartFile multipartFile, ProductBody productBody) throws IOException;
 
-    ProductDTO updateProduct(Long productId, ProductBody productBody);
+    ProductDTO updateProduct(Long productId, MultipartFile multipartFile, ProductBody productBody) throws IOException;
 
-    void deleteProduct(Long productId);
+    void deleteProduct(Long productId) throws IOException;
 
     ProductDTO getProductById(Long productId);
 

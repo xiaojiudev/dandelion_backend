@@ -75,14 +75,14 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductDTO updateProduct(Long productId, ProductBody productBody) {
+    public ProductDTO updateProduct(Long productId, MultipartFile multipartFile, ProductBody productBody) throws IOException {
 
         // check product exist
-        Product product = productRepo.findById(productId)
+        Product existingProduct = productRepo.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found with id = " + productId));
 
         // if update product_name check it available to use. Because product name is unique
-        if (!product.getName().equals(productBody.getName())) {
+        if (!existingProduct.getName().equals(productBody.getName())) {
             Optional<Product> temp = productRepo.findByNameIgnoreCase(productBody.getName());
 
             if (temp.isPresent()) {
@@ -91,26 +91,33 @@ public class ProductServiceImpl implements ProductService {
 
         }
 
-        // Upload the file if a new one is provided
-        
-
         // check category exist
         Category category = categoryRepo.findById(productBody.getCategoryId())
                 .orElseThrow(() -> new ResourceNotFoundException("Category id not found: " + productBody.getCategoryId()));
 
+
+        String mediaUrl = existingProduct.getMediaUrl();
+
+        // Upload the file if a new one is provided
+        if (multipartFile != null) {
+            String publicId = fileUpload.extractPublicId(mediaUrl);
+            fileUpload.deleteFile(publicId);
+            mediaUrl = fileUpload.uploadFile(multipartFile);
+        }
+
         // set properties
-        product.setName(productBody.getName());
-        product.setWeight(productBody.getWeight());
-        product.setQuantity(productBody.getQuantity());
-//        product.setMediaUrl(productBody.getMediaUrl());
-        product.setPrice(productBody.getPrice());
-        product.setDescription(productBody.getDescription());
-        product.setInformation(productBody.getInformation());
-        product.setTag(productBody.getTag());
-        product.setCategory(category);
+        existingProduct.setName(productBody.getName());
+        existingProduct.setWeight(productBody.getWeight());
+        existingProduct.setQuantity(productBody.getQuantity());
+        existingProduct.setMediaUrl(mediaUrl);
+        existingProduct.setPrice(productBody.getPrice());
+        existingProduct.setDescription(productBody.getDescription());
+        existingProduct.setInformation(productBody.getInformation());
+        existingProduct.setTag(productBody.getTag());
+        existingProduct.setCategory(category);
 
         // save
-        Product updatedProduct = productRepo.save(product);
+        Product updatedProduct = productRepo.save(existingProduct);
 
         // convert into DTO
         ProductDTO updatedProductDTO = modelMapper.map(updatedProduct, ProductDTO.class);
@@ -120,13 +127,18 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void deleteProduct(Long productId) {
+    public void deleteProduct(Long productId) throws IOException {
 
         Product product = productRepo.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found with id = " + productId));
 
-        productRepo.delete(product);
+        String mediaUrl = product.getMediaUrl();
+        if (mediaUrl != null) {
+            String publicId = fileUpload.extractPublicId(mediaUrl);
 
+            fileUpload.deleteFile(publicId);
+        }
+        productRepo.delete(product);
     }
 
     @Override

@@ -7,7 +7,6 @@ import com.dandelion.backend.payloads.ProductBody;
 import com.dandelion.backend.payloads.ProductResponse;
 import com.dandelion.backend.payloads.dto.ProductDTO;
 import com.dandelion.backend.services.ProductService;
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -36,13 +35,16 @@ public class ProductController {
 
     // update
     @PutMapping("/products/{productId}")
-    public ResponseEntity<ProductDTO> updateProduct(@PathVariable("productId") Long productId, @Valid @RequestBody ProductBody productBody) {
-        return new ResponseEntity<>(productService.updateProduct(productId, productBody), HttpStatus.OK);
+    public ResponseEntity<ProductDTO> updateProduct(
+            @PathVariable("productId") Long productId,
+            @RequestParam(value = "media_file", required = false) MultipartFile mediaFile,
+            @ModelAttribute ProductBody productBody) throws IOException {
+        return new ResponseEntity<>(productService.updateProduct(productId, mediaFile, productBody), HttpStatus.OK);
     }
 
     // delete
     @DeleteMapping("/products/{productId}")
-    public ResponseEntity<ApiResponse> deleteProduct(@PathVariable("productId") Long productId) {
+    public ResponseEntity<ApiResponse> deleteProduct(@PathVariable("productId") Long productId) throws IOException {
 
         productService.deleteProduct(productId);
 
