@@ -25,8 +25,8 @@ public class ProductBody {
 
     private Integer quantity;
 
-    @JsonProperty("media_url")
-    private String mediaUrl;
+//    @JsonProperty("media_file")
+//    private MultipartFile mediaFile;
 
     private BigDecimal price;
 

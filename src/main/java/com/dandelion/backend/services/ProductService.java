@@ -3,11 +3,13 @@ package com.dandelion.backend.services;
 import com.dandelion.backend.payloads.ProductBody;
 import com.dandelion.backend.payloads.ProductResponse;
 import com.dandelion.backend.payloads.dto.ProductDTO;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface ProductService {
-    ProductDTO createProduct(ProductBody productBody);
+    ProductDTO createProduct(MultipartFile multipartFile, ProductBody productBody) throws IOException;
 
     ProductDTO updateProduct(Long productId, ProductBody productBody);
 

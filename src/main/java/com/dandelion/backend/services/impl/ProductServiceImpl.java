@@ -9,52 +9,60 @@ import com.dandelion.backend.payloads.ProductResponse;
 import com.dandelion.backend.payloads.dto.ProductDTO;
 import com.dandelion.backend.repositories.CategoryRepo;
 import com.dandelion.backend.repositories.ProductRepo;
+import com.dandelion.backend.services.FileUpload;
 import com.dandelion.backend.services.ProductService;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
 
-    @Autowired
-    private ProductRepo productRepo;
-
-    @Autowired
-    private CategoryRepo categoryRepo;
-
-    @Autowired
-    private ModelMapper modelMapper;
+    private final ProductRepo productRepo;
+    private final CategoryRepo categoryRepo;
+    private final ModelMapper modelMapper;
+    private final FileUpload fileUpload;
 
     @Override
-    public ProductDTO createProduct(ProductBody productBody) {
+    public ProductDTO createProduct(MultipartFile multipartFile, ProductBody productBody) throws IOException {
 
         // check category exists
         Category category = categoryRepo.findById(productBody.getCategoryId())
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found: " + productBody.getCategoryId()));
 
-        // check product name is available
-        Optional<Product> tempProduct = productRepo.findByNameIgnoreCase(productBody.getName());
 
-        if (tempProduct.isPresent()) {
-            throw new ResourceAlreadyExistsException("Product already exist with name = " + productBody.getName());
+        // check product name is available
+        if (productRepo.existsByNameIgnoreCase(productBody.getName())) {
+            throw new ResourceAlreadyExistsException("Product already exists with name = " + productBody.getName());
         }
 
-        // convert into product
-        Product product = modelMapper.map(productBody, Product.class);
+        String mediaUrl = fileUpload.uploadFile(multipartFile);
 
-        // set category for product
-        product.setCategory(category);
+        // create a new product using a builder
+        Product product = Product.builder()
+                .name(productBody.getName())
+                .weight(productBody.getWeight())
+                .quantity(productBody.getQuantity())
+                .price(productBody.getPrice())
+                .mediaUrl(mediaUrl)
+                .description(productBody.getDescription())
+                .information(productBody.getInformation())
+                .tag(productBody.getTag())
+                .category(category)
+                .build();
 
         // save product
         Product newProduct = productRepo.save(product);
@@ -83,6 +91,9 @@ public class ProductServiceImpl implements ProductService {
 
         }
 
+        // Upload the file if a new one is provided
+        
+
         // check category exist
         Category category = categoryRepo.findById(productBody.getCategoryId())
                 .orElseThrow(() -> new ResourceNotFoundException("Category id not found: " + productBody.getCategoryId()));
@@ -91,7 +102,7 @@ public class ProductServiceImpl implements ProductService {
         product.setName(productBody.getName());
         product.setWeight(productBody.getWeight());
         product.setQuantity(productBody.getQuantity());
-        product.setMediaUrl(productBody.getMediaUrl());
+//        product.setMediaUrl(productBody.getMediaUrl());
         product.setPrice(productBody.getPrice());
         product.setDescription(productBody.getDescription());
         product.setInformation(productBody.getInformation());

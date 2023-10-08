@@ -13,7 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -26,8 +28,10 @@ public class ProductController {
 
     // create
     @PostMapping("/products")
-    public ResponseEntity<ProductDTO> createProduct(@Valid @RequestBody ProductBody productBody) {
-        return new ResponseEntity<>(productService.createProduct(productBody), HttpStatus.CREATED);
+    public ResponseEntity<ProductDTO> createProduct(
+            @ModelAttribute ProductBody productBody,
+            @RequestParam("media_file") MultipartFile mediaFile) throws IOException {
+        return new ResponseEntity<>(productService.createProduct(mediaFile, productBody), HttpStatus.CREATED);
     }
 
     // update
