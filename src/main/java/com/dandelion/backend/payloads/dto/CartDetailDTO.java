@@ -13,6 +13,7 @@ import java.math.BigDecimal;
 @Builder
 public class CartDetailDTO {
 
+    @JsonProperty("product_id")
     private Long productId;
     private String name;
     private Integer quantity;

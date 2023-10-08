@@ -13,11 +13,16 @@ import java.util.List;
 @Setter
 @Builder
 public class CartDTO {
-
+    @JsonProperty("cart_id")
+    private Long cartId;
+    @JsonProperty("user_id")
     private Long userId;
     private Boolean status;
     @JsonProperty("merchandise_total")
     private BigDecimal merchandiseTotal;
+    @JsonProperty("shipping_fee")
+    private BigDecimal shippingFee;
+    private BigDecimal total;
     private List<CartDetailDTO> items;
 
 }

@@ -157,6 +157,7 @@ public class CartServiceImpl implements CartService {
 
         CartDTO cartDTO = new CartDTO();
 
+        cartDTO.setCartId(userCart.getId());
         cartDTO.setUserId(user.getId());
         cartDTO.setStatus(userCart.getStatus());
         cartDTO.setMerchandiseTotal(merchandiseTotal.get()); // Get the totalFee value from AtomicReference
