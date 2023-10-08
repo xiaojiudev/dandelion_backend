@@ -2,6 +2,7 @@ package com.dandelion.backend.configs;
 
 
 import com.cloudinary.Cloudinary;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -10,9 +11,13 @@ import java.util.Map;
 
 @Configuration
 public class CloudinaryConfig {
-    private final String CLOUD_NAME = "de8xbko8y";
-    private final String API_KEY = "935182757719512";
-    private final String API_SECRET = "BcSj63u_nxyCUUdm_ReHtXlLOVM";
+
+    @Value("${cloudinary.cloud_name}")
+    private String CLOUD_NAME;
+    @Value("${cloudinary.api_key}")
+    private String API_KEY;
+    @Value("${cloudinary.api_secret}")
+    private String API_SECRET;
 
     @Bean
     public Cloudinary cloudinary() {
