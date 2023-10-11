@@ -78,9 +78,9 @@ select * from `category`;
 
 -- PRODUCT
 insert into `product`(`category_id`, `name`, `weight`, `quantity`, `media_url`, `price`, `description`, `information`, `tag`) 
-	values("1", "StreetStyle Classic Canvas Orange", 500, 1523, "https://i.ebayimg.com/images/g/FqoAAOSwkH5kNnxM/s-l1200.jpg", 599, "this is desc", " this is information", "tag1,tag2"); 
+	values("1", "StreetStyle Classic Canvas Orange", 500, 1523, "https://res.cloudinary.com/de8xbko8y/image/upload/v1694839085/uploads/sample_image.jpg", 599, "this is desc", " this is information", "tag1,tag2"); 
 insert into `product`(`category_id`, `name`, `weight`, `quantity`, `media_url`, `price`, `description`, `information`, `tag`) 
-	values("1", "EcoFlex Comfort Apple", 500, 1732, "https://i.ebayimg.com/images/g/uwcAAOSwiLdkNnoV/s-l1200.webp", 399, "this is desc", " this is information", "tag1,tag3"); 
+	values("1", "EcoFlex Comfort Apple", 500, 1732, "https://res.cloudinary.com/de8xbko8y/image/upload/v1694839085/uploads/sample_image.jpg", 399, "this is desc", " this is information", "tag1,tag3"); 
 
 DELIMITER //
 CREATE PROCEDURE generateProducts(IN num_rows INT)
@@ -107,7 +107,7 @@ BEGIN
              CONCAT('Product ', FLOOR(RAND() * 1000 * i)), 
              FLOOR(RAND() * 1000) + 100, 
              FLOOR(RAND() * 1000) + 1, 
-             'https://i.ebayimg.com/images/g/uwcAAOSwiLdkNnoV/s-l1200.webp', 
+             'https://res.cloudinary.com/de8xbko8y/image/upload/v1696991580/uploads/vn-11134207-7r98o-lknwgw53gqkw0a_txekyq.jpg', 
              FLOOR(RAND() * 500) + 50, 
              CONCAT('This is description ', i), 
              CONCAT('This is information ', i), 
@@ -153,8 +153,8 @@ INSERT INTO `shipping_method` (`name`, `price`) VALUES ('Free Shipping', 0.00);
 select * from `shipping_method`;
 
 -- SHOP ORDER
-INSERT INTO `shop_order` (`user_id`, `order_transaction_id`, `user_comment`, `user_phone`, `shipping_address`, `shipping_method_id`, `merchandise_total`, `total`, `order_status_id`, `tracking_code`)
-VALUES (1, null, 'comment', '0326423996', '123 Nguyen Van A Street', 2, 898.00, 900.00, 4, 'TRACK123456');
+INSERT INTO `shop_order` (`user_id`, `order_transaction_id`,`user_full_name`, `user_comment`, `user_phone`, `shipping_address`, `shipping_method_id`, `merchandise_total`, `shipping_fee`, `total`, `order_status_id`, `tracking_code`)
+VALUES (1, null, 'ly dai phat,' 'comment', '0326423996', '123 Nguyen Van A Street', 2, 898.00, 2.0, 900.00, 4, 'TRACK123456');
 
 select * from `shop_order`;
 
@@ -162,7 +162,9 @@ select * from `shop_order`;
 insert into `order_detail`(`product_id`, `shop_order_id`, `quantity`, `price`) values (1, 1, 1, 399);
 insert into `order_detail`(`product_id`, `shop_order_id`, `quantity`, `price`) values (2, 1, 1, 499);
 
+select * from `shop_order`;
 select * from `order_detail`;
+select * from `shopping_cart`;
 
 -- USER REVIEW
 INSERT INTO user_review (`user_id`, `ordered_product_id`, `rating_value`, `comment`, `like`, `media_url`)
