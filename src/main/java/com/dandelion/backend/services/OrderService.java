@@ -1,17 +1,18 @@
 package com.dandelion.backend.services;
 
 
-import com.dandelion.backend.payloads.ShopOrderBody;
+import com.dandelion.backend.payloads.OrderRequest;
 import com.dandelion.backend.payloads.dto.ShopOrderDTO;
 
-public interface ShopOrderService {
+import java.util.List;
 
+public interface OrderService {
 
-    ShopOrderDTO createOrder(Long userId, ShopOrderBody shopOrderBody);
+    void placeOrder(OrderRequest orderRequest);
 
-    ShopOrderDTO updateOrder(Long userId, Long shopOrderId);
+    void acceptOrder(Long orderId);
 
-    ShopOrderDTO getOrderById(Long orderId);
+    void cancelOrder(Long orderId);
 
-    void deleteOrderById(Long orderId);
+    List<ShopOrderDTO> getAllOrders();
 }
