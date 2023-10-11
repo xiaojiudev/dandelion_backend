@@ -19,13 +19,13 @@ public class WebSecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http
-                .authorizeHttpRequests(configurer -> configurer
+                .authorizeHttpRequests(authorize -> authorize
                         .anyRequest()
                         .permitAll()
                 )
                 .csrf(csrf -> csrf.disable())
                 .cors(Customizer.withDefaults());
-        
+
         return http.build();
     }
 
