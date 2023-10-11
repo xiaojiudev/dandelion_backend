@@ -13,6 +13,7 @@ import java.util.List;
 @Setter
 @Entity
 @Table(name = "order_detail")
+@ToString
 public class OrderDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

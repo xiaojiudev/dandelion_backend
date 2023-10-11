@@ -27,6 +27,7 @@ public class OrderTransaction {
 
     @Column(name = "transaction_status")
     @JsonProperty("transaction_status")
+    @Enumerated(EnumType.STRING)
     private TransactionStatus transactionStatus;
 
     @Column(name = "transaction_amount", nullable = false, precision = 10, scale = 2)

@@ -14,5 +14,5 @@ public interface RoleRepo extends JpaRepository<Role, Long> {
 
     List<Role> findByRoleNameIn(Collection<RoleBase> roleNames);
 
-
+    
 }

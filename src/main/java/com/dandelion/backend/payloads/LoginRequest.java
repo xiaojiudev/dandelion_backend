@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 
 @Getter
-public class LoginBody {
+public class LoginRequest {
 
     @NotNull
     @NotBlank

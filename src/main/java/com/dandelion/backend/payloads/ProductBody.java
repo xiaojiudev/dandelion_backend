@@ -24,10 +24,7 @@ public class ProductBody {
     private Double weight;
 
     private Integer quantity;
-
-//    @JsonProperty("media_file")
-//    private MultipartFile mediaFile;
-
+    
     private BigDecimal price;
 
     @NotBlank(message = "Information not blank!")

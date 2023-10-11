@@ -26,6 +26,10 @@ public class ShopOrder {
     @Column(name = "id", nullable = false)
     private Long id;
 
+    @Column(name = "user_full_name")
+    @JsonProperty("user_full_name")
+    private String userFullName;
+
     @Column(name = "user_comment")
     @JsonProperty("user_comment")
     private String userComment;
@@ -41,6 +45,9 @@ public class ShopOrder {
     @Column(name = "merchandise_total", nullable = false, precision = 10, scale = 2)
     @JsonProperty("merchandise_total")
     private BigDecimal merchandiseTotal;
+
+    @Column(name = "shipping_fee", nullable = false, precision = 10, scale = 2)
+    private BigDecimal shippingFee;
 
     @Column(name = "total", nullable = false, precision = 10, scale = 2)
     private BigDecimal total;

@@ -20,9 +20,6 @@ public class CartDTO {
     private Boolean status;
     @JsonProperty("merchandise_total")
     private BigDecimal merchandiseTotal;
-    @JsonProperty("shipping_fee")
-    private BigDecimal shippingFee;
-    private BigDecimal total;
     private List<CartDetailDTO> items;
 
 }
