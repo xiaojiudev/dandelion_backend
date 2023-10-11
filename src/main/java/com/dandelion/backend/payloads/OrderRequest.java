@@ -1,4 +1,2 @@
-package com.dandelion.backend.payloads;
-
-public class OrderRequest {
+package com.dandelion.backend.payloads;public class OrderRequest {
 }
