@@ -28,7 +28,9 @@ insert into `user_role`(`user_id`, `role_id`) values (2, 3);
 insert into `user_role`(`user_id`, `role_id`) values (3, 3);
 
 select * from `user`;
+select * from `role`;
 select * from `user_role`;
+select * from `product`;
 
 -- PAYMENT TYPE
 insert into `payment_method`(`name`, `is_enabled`) values('COD', true);
