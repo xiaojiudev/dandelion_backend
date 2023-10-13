@@ -1,13 +1,14 @@
 package com.dandelion.backend.payloads;
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class RegistrationBody {
+public class RegistrationRequest {
 
     @Email
     @NotNull
@@ -27,5 +28,6 @@ public class RegistrationBody {
 
     @NotNull
     @NotBlank
+    @JsonProperty("full_name")
     private String fullName;
 }

@@ -1,20 +1,29 @@
 package com.dandelion.backend.services;
 
-import com.dandelion.backend.payloads.UserBody;
-import com.dandelion.backend.payloads.dto.UserDTO;
-
-import java.util.List;
+import com.dandelion.backend.entities.Role;
+import com.dandelion.backend.entities.User;
+import com.dandelion.backend.payloads.BearerToken;
+import com.dandelion.backend.payloads.LoginRequest;
+import com.dandelion.backend.payloads.RegistrationRequest;
+import org.springframework.http.ResponseEntity;
 
 public interface UserService {
 
-    UserDTO createUser(UserBody user);
+//    UserDTO createUser(UserBody user);
+//
+//    UserDTO updateUser(Long userId, UserBody user);
+//
+//    UserDTO getUserById(Long userId);
+//
+//    List<UserDTO> getAllUsers();
 
-    UserDTO updateUser(Long userId, UserBody user);
+//    void deleteUser(Long userId);
 
-    UserDTO getUserById(Long userId);
+    BearerToken authenticate(LoginRequest loginRequest);
 
-    List<UserDTO> getAllUsers();
+    ResponseEntity<?> register(RegistrationRequest registrationRequest);
 
-    void deleteUser(Long userId);
+    Role saveRole(Role role);
 
+    User saveUser(User user);
 }
