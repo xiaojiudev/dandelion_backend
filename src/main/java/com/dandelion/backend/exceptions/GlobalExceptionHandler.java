@@ -18,6 +18,19 @@ public class GlobalExceptionHandler {
 
     // Custom Exception Handler
 
+    @ExceptionHandler(UserNotAuthenticatedException.class)
+    public ResponseEntity<StandardError> userNotAuthenticatedExceptionHandler(UserNotAuthenticatedException e, HttpServletRequest request) {
+        StandardError err = StandardError.builder()
+                .timeStamp(new Date())
+                .status(HttpStatus.UNAUTHORIZED.value())
+                .error("User is not authenticated!")
+                .message(e.getMessage())
+                .path(request.getRequestURI())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(err);
+    }
+
     @ExceptionHandler(ResourceAlreadyExistsException.class)
     public ResponseEntity<StandardError> resourceAlreadyExistsExceptionHandler(ResourceAlreadyExistsException e, HttpServletRequest request) {
         StandardError err = StandardError.builder()

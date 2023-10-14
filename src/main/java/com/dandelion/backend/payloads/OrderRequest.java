@@ -10,9 +10,6 @@ import lombok.ToString;
 @ToString
 public class OrderRequest {
 
-    @JsonProperty("user_id")
-    Long userId;
-
     @JsonProperty("shipping_method_id")
     Long shippingMethodId;
 

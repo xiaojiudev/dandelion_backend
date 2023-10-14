@@ -31,6 +31,8 @@ select * from `user`;
 select * from `role`;
 select * from `user_role`;
 select * from `product`;
+select * from `category`;
+select * from `address`;
 
 -- PAYMENT TYPE
 insert into `payment_method`(`name`, `is_enabled`) values('COD', true);

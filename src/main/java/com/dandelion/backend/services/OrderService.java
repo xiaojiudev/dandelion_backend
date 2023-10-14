@@ -8,11 +8,13 @@ import java.util.List;
 
 public interface OrderService {
 
-    void placeOrder(OrderRequest orderRequest);
+    void placeOrder(Long userId, OrderRequest orderRequest);
 
     void acceptOrder(Long orderId);
 
     void cancelOrder(Long orderId);
 
     List<ShopOrderDTO> getAllOrders();
+
+    List<ShopOrderDTO> getOrdersByUserId(Long userId);
 }

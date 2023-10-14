@@ -5,8 +5,8 @@ import com.dandelion.backend.payloads.AddToCartBody;
 import com.dandelion.backend.payloads.ApiResponse;
 import com.dandelion.backend.payloads.dto.CartDTO;
 import com.dandelion.backend.services.CartService;
+import com.dandelion.backend.utils.CurrentUserUtil;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,37 +16,46 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor
 public class CartController {
 
-    @Autowired
-    private CartService cartService;
 
-    @PostMapping("/users/{userId}/carts")
-    public ResponseEntity<ApiResponse> addToCart(
-            @PathVariable("userId") Long userId,
-            @RequestBody AddToCartBody addToCartBody) {
+    private final CartService cartService;
+    private final CurrentUserUtil currentUserUtil;
+
+    @PostMapping("/carts")
+    public ResponseEntity<ApiResponse> addToCart(@RequestBody AddToCartBody addToCartBody) {
+
+        Long userId = currentUserUtil.getCurrentUser().getId();
+
         cartService.addToCart(userId, addToCartBody);
 
         return new ResponseEntity<>(new ApiResponse("Item added to the cart successfully", true), HttpStatus.OK);
     }
 
-    @DeleteMapping("/users/{userId}/carts/remove/{cartItemId}")
-    public ResponseEntity<ApiResponse> removeAnItem(
-            @PathVariable("userId") Long userId,
-            @PathVariable("cartItemId") Long cartItemId) {
+    @DeleteMapping("/carts/{cartItemId}")
+    public ResponseEntity<ApiResponse> removeAnItem(@PathVariable("cartItemId") Long cartItemId) {
+
+        Long userId = currentUserUtil.getCurrentUser().getId();
+
         cartService.removeAnItem(userId, cartItemId);
 
         return new ResponseEntity<>(new ApiResponse("Delete item successfully", true), HttpStatus.OK);
     }
 
-    @DeleteMapping("/users/{userId}/carts/remove")
-    public ResponseEntity<ApiResponse> removeAllItems(@PathVariable("userId") Long userId) {
+    @DeleteMapping("/carts")
+    public ResponseEntity<ApiResponse> removeAllItems() {
+
+        Long userId = currentUserUtil.getCurrentUser().getId();
+
         cartService.removeAllItems(userId);
 
         return new ResponseEntity<>(new ApiResponse("Delete all items successfully", true), HttpStatus.OK);
     }
 
-    @GetMapping("/users/{userId}/carts")
-    public ResponseEntity<CartDTO> getDetailCart(@PathVariable("userId") Long userId) {
+    @GetMapping("/carts")
+    public ResponseEntity<CartDTO> getDetailCart() {
+
+        Long userId = currentUserUtil.getCurrentUser().getId();
 
         return new ResponseEntity<>(cartService.getDetailCart(userId), HttpStatus.OK);
     }
+
 }

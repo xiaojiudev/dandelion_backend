@@ -28,6 +28,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String token = jwtUtilities.getToken(request);
 
+        if (token == null) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        System.out.println("Filter - Token: " + token);
+
         if (token != null && jwtUtilities.validateToken(token)) {
 
             String email = jwtUtilities.extractUsername(token);
@@ -38,13 +45,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             if (userDetails != null) {
                 UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(userDetails.getUsername(), null, userDetails.getAuthorities());
+                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
-                System.out.println(authentication);
+                System.out.println("Authentication filter: " + authentication);
                 log.info("authenticated user with email: {}", email);
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
+            } else {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             }
+        } else {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         }
 
         filterChain.doFilter(request, response);

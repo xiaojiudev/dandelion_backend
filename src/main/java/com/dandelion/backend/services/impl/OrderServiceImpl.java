@@ -36,10 +36,10 @@ public class OrderServiceImpl implements OrderService {
     private final OrderTransactionRepo orderTransactionRepo;
 
     @Override
-    public void placeOrder(OrderRequest orderRequest) {
+    public void placeOrder(Long userId, OrderRequest orderRequest) {
 
         // User
-        User user = userRepo.findById(orderRequest.getUserId())
+        User user = userRepo.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found!"));
         String userFullName = user.getFullName();
         String userPhone = user.getPhone();
@@ -228,6 +228,55 @@ public class OrderServiceImpl implements OrderService {
                 })
                 .collect(Collectors.toList());
 
+
+        return shopOrderDTOS;
+    }
+
+    @Override
+    public List<ShopOrderDTO> getOrdersByUserId(Long userId) {
+
+        User user = userRepo.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found!"));
+
+        System.out.println("USER: " + user);
+
+        List<ShopOrder> shopOrders = orderRepo.findByUser(user);
+
+        List<ShopOrderDTO> shopOrderDTOS = shopOrders.stream()
+                .map(item -> {
+                    ShopOrderDTO temp = new ShopOrderDTO();
+
+                    temp.setId(item.getId());
+                    temp.setUserFullName(item.getUserFullName());
+                    temp.setUserComment(item.getUserComment());
+                    temp.setUserPhone(item.getUserPhone());
+                    temp.setShippingAddress(item.getShippingAddress());
+                    temp.setMerchandiseTotal(item.getMerchandiseTotal());
+                    temp.setShippingFee(item.getShippingFee());
+                    temp.setTotal(item.getTotal());
+                    temp.setPaymentMethod(item.getOrderTransaction().getPaymentMethod().getName());
+                    temp.setOrderStatus(item.getOrderStatus().getStatus());
+                    temp.setTransactionStatus(item.getOrderTransaction().getTransactionStatus());
+                    temp.setTrackingCode(item.getTrackingCode());
+
+                    List<ShopOrderDetailDTO> shopOrderDetailDTOs = item.getOrderDetails().stream()
+                            .map(itemDetail -> {
+                                ShopOrderDetailDTO shopOrderDetailDTO = new ShopOrderDetailDTO();
+                                shopOrderDetailDTO.setId(itemDetail.getId());
+                                shopOrderDetailDTO.setProductName(itemDetail.getProduct().getName());
+                                shopOrderDetailDTO.setPrice(itemDetail.getPrice());
+                                shopOrderDetailDTO.setQuantity(itemDetail.getQuantity());
+
+                                return shopOrderDetailDTO;
+                            })
+                            .collect(Collectors.toList());
+
+                    temp.setOrderDetails(shopOrderDetailDTOs);
+
+                    return temp;
+
+                })
+                .collect(Collectors.toList());
 
         return shopOrderDTOS;
     }

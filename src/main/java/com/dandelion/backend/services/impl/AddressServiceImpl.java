@@ -2,6 +2,7 @@ package com.dandelion.backend.services.impl;
 
 import com.dandelion.backend.entities.Address;
 import com.dandelion.backend.entities.User;
+import com.dandelion.backend.exceptions.ResourceAlreadyExistsException;
 import com.dandelion.backend.exceptions.ResourceNotFoundException;
 import com.dandelion.backend.payloads.dto.AddressDTO;
 import com.dandelion.backend.repositories.AddressRepo;
@@ -29,6 +30,13 @@ public class AddressServiceImpl implements AddressService {
     public AddressDTO createAddress(Long userId, AddressDTO addressDTO) {
         User user = userRepo.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found!"));
+
+        boolean existsAddress = addressRepo.existsByUser_IdAndAddressLine1IgnoreCase(userId, addressDTO.getAddressLine1());
+
+        if (existsAddress) {
+            throw new ResourceAlreadyExistsException("Address already exist!");
+        }
+
 
         boolean isDefault = !addressRepo.existsByIsDefaultAndUser_Id(true, userId);
 

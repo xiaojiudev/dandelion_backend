@@ -9,7 +9,8 @@ import java.util.Optional;
 public interface AddressRepo extends JpaRepository<Address, Long> {
     Optional<Address> findByIsDefaultAndUser_Id(Boolean isDefault, Long id);
 
-    Optional<Address> findByAddressLine1AndUser_Id(String addressLine1, Long id);
+    boolean existsByUser_IdAndAddressLine1IgnoreCase(Long id, String addressLine1);
+
 
     Optional<Address> findByIdAndUser_Id(Long id, Long id1);
 

@@ -27,6 +27,7 @@ public class WebSecurityConfig {
 
     private final CustomerUserDetailsService customerUserDetailsService;
 
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
@@ -46,16 +47,54 @@ public class WebSecurityConfig {
                     return config;
                 }))
                 .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/products").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/v1/products").hasAnyAuthority("ADMIN", "MANAGER")
+                        // Auth
+                        .requestMatchers("/api/v1/auth/**").permitAll()
+
+                        // Product
+                        .requestMatchers(HttpMethod.GET, "/api/v1/products/**").permitAll()
+                        .requestMatchers("/api/v1/products/**").hasAnyAuthority("ADMIN", "MANAGER")
+
+                        // Category
+                        .requestMatchers(HttpMethod.GET, "/api/v1/categories/**").permitAll()
+                        .requestMatchers("/api/v1/categories/**").hasAnyAuthority("ADMIN", "MANAGER")
+
+                        // Cart
+                        .requestMatchers("/api/v1/carts/**").permitAll()
+
+                        // Address
+                        .requestMatchers("/api/v1/address/**").permitAll()
+
+                        // Shipping method
+                        .requestMatchers(HttpMethod.GET, "/api/v1/shipping-methods/**").permitAll()
+                        .requestMatchers("/api/v1/shipping-methods/**").hasAnyAuthority("ADMIN", "MANAGER")
+
+                        // Payment method
+                        .requestMatchers(HttpMethod.GET, "/api/v1/payment-methods/**").permitAll()
+                        .requestMatchers("/api/v1/payment-methods/**").hasAnyAuthority("ADMIN", "MANAGER")
+
+                        // Order status
+                        .requestMatchers(HttpMethod.GET, "/api/v1/order-status/**").permitAll()
+
+                        // Place order
+                        .requestMatchers("/api/v1/place-order/**").hasAuthority("CUSTOMER")
+                        .requestMatchers("/api/v1/orders").hasAuthority("CUSTOMER")
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/orders/**").hasAnyAuthority("ADMIN", "MANAGER")
+
+                        // User
+                        // .requestMatchers("/api/v1/users").permitAll()
                         .anyRequest().authenticated()
-                );
+                )
+//                .logout(logout -> logout.logoutUrl("/api/v1/auth/logout")
+//                        .addLogoutHandler(logoutHandler)
+//                        .logoutSuccessHandler(((request, response, authentication) -> SecurityContextHolder.clearContext())))
+
+        ;
 
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
+
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
