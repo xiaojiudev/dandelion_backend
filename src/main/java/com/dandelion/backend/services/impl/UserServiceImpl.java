@@ -16,6 +16,7 @@ import com.dandelion.backend.repositories.UserAuthenticationRepo;
 import com.dandelion.backend.repositories.UserRepo;
 import com.dandelion.backend.security.JwtUtilities;
 import com.dandelion.backend.services.UserService;
+import com.dandelion.backend.utils.CurrentUserUtil;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
@@ -53,6 +54,8 @@ public class UserServiceImpl implements UserService {
 
     private final JwtUtilities jwtUtilities;
 
+    private final CurrentUserUtil currentUserUtil;
+
     private final ModelMapper modelMapper;
 
     @Override
@@ -76,33 +79,30 @@ public class UserServiceImpl implements UserService {
         // Extract user_authentication table
         UserAuthentication userAuthentication = userAuthenticationRepo.findByUser(user);
 
+        // If user_authentication table not exist or token expired
+        if (userAuthentication == null || jwtUtilities.isTokenExpired(userAuthentication.getExpiredAt())) {
 
-        if (userAuthentication == null || (userAuthentication != null && jwtUtilities.isTokenExpired(userAuthentication.getToken()))) {
-            System.out.println("User_authentication table not exist or token expired");
-
+            // Generate new token
             String token = jwtUtilities.generateToken(user.getEmail(), roleNames);
 
+            // Create user_authentication table if not exist
             if (userAuthentication == null) {
-                System.out.println("User_authentication table not exist");
-
                 userAuthentication = new UserAuthentication();
-
                 userAuthentication.setUser(user);
+                userAuthentication.setModifiedAt(null);
             }
 
+            // Set token & expiredAt
             userAuthentication.setToken(token);
-            userAuthentication.setModifiedAt(null);
+            userAuthentication.setExpiredAt(jwtUtilities.extractExpiration(token));
 
             userAuthenticationRepo.save(userAuthentication);
 
             return new BearerToken(token, "Bearer");
-        } else {
-            System.out.println("Token expired: " + jwtUtilities.isTokenExpired(userAuthentication.getToken()));
-            System.out.println("Token: " + userAuthentication.getToken());
-            System.out.println("User_authentication table exist and token unexpired");
-            return new BearerToken(userAuthentication.getToken(), "Bearer");
         }
 
+        // Default user_authentication exist and token valid
+        return new BearerToken(userAuthentication.getToken(), "Bearer");
     }
 
     @Override
@@ -205,7 +205,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO getUserById(Long userId) {
-
+        
         User user = userRepo.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id = " + userId));
 
