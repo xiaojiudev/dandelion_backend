@@ -238,8 +238,6 @@ public class OrderServiceImpl implements OrderService {
         User user = userRepo.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found!"));
 
-        System.out.println("USER: " + user);
-
         List<ShopOrder> shopOrders = orderRepo.findByUser(user);
 
         List<ShopOrderDTO> shopOrderDTOS = shopOrders.stream()

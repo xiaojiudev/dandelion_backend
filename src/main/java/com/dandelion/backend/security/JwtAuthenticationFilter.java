@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -28,12 +29,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String token = jwtUtilities.getToken(request);
 
-        if (token == null) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
         System.out.println("Filter - Token: " + token);
+        System.out.println("Token valid: " + jwtUtilities.validateToken(token));
 
         if (token != null && jwtUtilities.validateToken(token)) {
 
@@ -43,19 +40,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             System.out.println(userDetails.getAuthorities());
 
-            if (userDetails != null) {
+            if (userDetails != null && jwtUtilities.validateToken(token, userDetails)) {
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
                 System.out.println("Authentication filter: " + authentication);
                 log.info("authenticated user with email: {}", email);
-
+                
                 SecurityContextHolder.getContext().setAuthentication(authentication);
-            } else {
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             }
-        } else {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+
         }
 
         filterChain.doFilter(request, response);

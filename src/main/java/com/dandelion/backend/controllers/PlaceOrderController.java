@@ -47,8 +47,6 @@ public class PlaceOrderController {
 
         Long userId = currentUserUtil.getCurrentUser().getId();
 
-        System.out.println("userid: " + userId);
-
         return new ResponseEntity<>(orderService.getOrdersByUserId(userId), HttpStatus.OK);
     }
 
