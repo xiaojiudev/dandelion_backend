@@ -18,8 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final UserService userService;
-
-
+    
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegistrationRequest registrationRequest) {
 
@@ -30,7 +29,4 @@ public class AuthController {
     public ResponseEntity<BearerToken> login(@RequestBody LoginRequest loginRequest) {
         return new ResponseEntity<>(userService.authenticate(loginRequest), HttpStatus.OK);
     }
-
-//    @PostMapping("/logout")
-     
 }

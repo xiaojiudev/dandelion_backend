@@ -16,7 +16,7 @@ public interface UserService {
     BearerToken authenticate(LoginRequest loginRequest);
 
     ResponseEntity<?> register(RegistrationRequest registrationRequest);
-
+    
     Role saveRole(Role role);
 
     User saveUser(User user);

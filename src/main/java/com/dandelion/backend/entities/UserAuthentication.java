@@ -4,6 +4,7 @@ package com.dandelion.backend.entities;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.util.Date;
 
@@ -21,8 +22,12 @@ public class UserAuthentication {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "token", nullable = false)
+    @Column(name = "token")
     private String token;
+
+    @Column(name = "expired_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date expiredAt;
 
     @Column(name = "created_at", updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
@@ -31,7 +36,7 @@ public class UserAuthentication {
 
     @Column(name = "modified_at")
     @Temporal(TemporalType.TIMESTAMP)
-    @CreationTimestamp
+    @UpdateTimestamp
     private Date modifiedAt;
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)

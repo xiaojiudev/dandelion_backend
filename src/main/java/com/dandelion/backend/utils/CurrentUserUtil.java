@@ -20,4 +20,6 @@ public class CurrentUserUtil {
 
         return (User) authentication.getPrincipal();
     }
+
+
 }
