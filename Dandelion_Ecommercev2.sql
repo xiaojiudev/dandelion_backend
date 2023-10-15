@@ -56,7 +56,8 @@ drop table if exists `user_authentication`;
 CREATE TABLE `user_authentication` (
   `id` bigint PRIMARY KEY AUTO_INCREMENT,
   `user_id` bigint default null,
-  `token` varchar(255) NOT NULL,
+  `token` varchar(255) null,
+  `expired_at` timestamp null,
   `created_at` timestamp DEFAULT (now()),
   `modified_at` timestamp DEFAULT null
 ) engine=InnoDB default char set=utf8mb4;
