@@ -1,8 +1,11 @@
 package com.dandelion.backend.security;
 
+import com.dandelion.backend.entities.UserAuthentication;
+import com.dandelion.backend.repositories.UserAuthenticationRepo;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,6 +20,7 @@ import java.util.function.Function;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class JwtUtilities {
 
     @Value("${jwt.secret}")
@@ -24,6 +28,8 @@ public class JwtUtilities {
 
     @Value("${jwt.expiration}")
     private Long jwtExpiration;
+
+    private final UserAuthenticationRepo userAuthenticationRepo;
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -43,13 +49,33 @@ public class JwtUtilities {
     }
 
     public Boolean validateToken(String token, UserDetails userDetails) {
+
+        if (token == null) {
+            return false;
+        }
+
         final String email = extractUsername(token);
-        return (email.equals(userDetails.getUsername()) && !isTokenExpired(token));
+        final UserAuthentication userAuthentication = userAuthenticationRepo.findByUser_Email(email);
+
+        if (userAuthentication == null) {
+            return false;
+        }
+
+        String userToken = userAuthentication.getToken();
+        Date userExpiredAt = userAuthentication.getExpiredAt();
+
+
+        return (email.equals(userDetails.getUsername()) && !isTokenExpired(token) && !isTokenExpired(userExpiredAt) && token.equals(userToken));
     }
+
 
     public Boolean isTokenExpired(String token) {
 
         return extractExpiration(token).before(new Date());
+    }
+
+    public Boolean isTokenExpired(Date date) {
+        return date.before(new Date());
     }
 
     public String generateToken(String email, List<String> roles) {
