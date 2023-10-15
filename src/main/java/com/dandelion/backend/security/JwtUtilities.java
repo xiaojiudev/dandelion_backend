@@ -48,19 +48,27 @@ public class JwtUtilities {
     }
 
     public Boolean isTokenExpired(String token) {
+
         return extractExpiration(token).before(new Date());
     }
 
     public String generateToken(String email, List<String> roles) {
 
-        return Jwts.builder().setSubject(email).claim("role", roles).setIssuedAt(new Date(System.currentTimeMillis()))
+        return Jwts.builder()
+                .setSubject(email)
+                .claim("role", roles)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(Date.from(Instant.now().plus(jwtExpiration, ChronoUnit.MILLIS)))
                 .signWith(SignatureAlgorithm.HS256, secret).compact();
     }
 
     public boolean validateToken(String token) {
+
         try {
-            Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
+            Jwts.parserBuilder()
+                    .setSigningKey(secret)
+                    .build()
+                    .parseClaimsJws(token);
             return true;
         } catch (SignatureException e) {
             log.info("Invalid JWT signature.");
@@ -88,5 +96,5 @@ public class JwtUtilities {
         } // The part after "Bearer "
         return null;
     }
-    
+
 }

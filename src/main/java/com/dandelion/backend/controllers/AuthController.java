@@ -30,4 +30,7 @@ public class AuthController {
     public ResponseEntity<BearerToken> login(@RequestBody LoginRequest loginRequest) {
         return new ResponseEntity<>(userService.authenticate(loginRequest), HttpStatus.OK);
     }
+
+//    @PostMapping("/logout")
+     
 }

@@ -13,7 +13,6 @@ CREATE TABLE `user` (
 	  `gender` ENUM ('MALE', 'FEMALE', 'OTHER') default 'OTHER',
 	  `avatar` varchar(255) DEFAULT "https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/User-avatar.svg/2048px-User-avatar.svg.png",
 	  `blocked` timestamp DEFAULT NULL,
-      `user_authentication_id` bigint default null,
 	  `created_at` timestamp DEFAULT (now()),
 	  `modified_at` timestamp DEFAULT NULL
 	) engine=InnoDB default char set=utf8mb4;
@@ -56,8 +55,10 @@ drop table if exists `user_authentication`;
 
 CREATE TABLE `user_authentication` (
   `id` bigint PRIMARY KEY AUTO_INCREMENT,
+  `user_id` bigint default null,
   `token` varchar(255) NOT NULL,
-  `created_at` timestamp DEFAULT (now())
+  `created_at` timestamp DEFAULT (now()),
+  `modified_at` timestamp DEFAULT null
 ) engine=InnoDB default char set=utf8mb4;
 
 drop table if exists `product`;
@@ -213,7 +214,7 @@ CREATE TABLE `promotion_product` (
   primary key (`product_id`, `promotion_id`)
 ) engine=InnoDB default char set=utf8mb4;
 
-ALTER TABLE `user` ADD FOREIGN KEY (`user_authentication_id`) REFERENCES `user_authentication` (`id`);
+ALTER TABLE `user_authentication` ADD FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
 
 ALTER TABLE `address` ADD FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
 

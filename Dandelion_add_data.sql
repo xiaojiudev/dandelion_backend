@@ -1,35 +1,16 @@
 use dandelion;
 
--- USER - PW: 1234567a
-insert into `user`(`email`, `phone`, `password`, `full_name`) values('ldphat99@gmail.com', '0326423996', '$10$rOq4Q6.4CWC9cY5hqJbuZuMnfjp4yxM4rvytBuitFzZYbndLM0Pb2', 'ly dai phat');
-insert into `user`(`email`, `phone`, `password`, `full_name`) values('zzsakura2018@gmail.com', '0986858157', '$10$rOq4Q6.4CWC9cY5hqJbuZuMnfjp4yxM4rvytBuitFzZYbndLM0Pb2', 'ly dai hai');
-insert into `user`(`email`, `phone`, `password`, `full_name`) values('phatb1705292@student.ctu.edu.vn','0335747997', '$10$rOq4Q6.4CWC9cY5hqJbuZuMnfjp4yxM4rvytBuitFzZYbndLM0Pb2', 'nguyen van a');
 
-select * from `user`; 
-select * from `product`; 
 -- ROLES
-insert into `role`(`role_name`) values ("ADMIN");
-insert into `role`(`role_name`) values ("MANAGER");
-insert into `role`(`role_name`) values ("CUSTOMER");
+-- insert into `role`(`role_name`) values ("ADMIN");
+-- insert into `role`(`role_name`) values ("MANAGER");
+-- insert into `role`(`role_name`) values ("CUSTOMER");
 
-select * from `role`;
-
-;-- USER ROLES
-	-- ADMIN with id=1 have 3 roles
-insert into `user_role`(`user_id`, `role_id`) values (1, 1);
-insert into `user_role`(`user_id`, `role_id`) values (1, 2);
-insert into `user_role`(`user_id`, `role_id`) values (1, 3);
-
-	-- MANAGER with id=2 have 2 roles
-insert into `user_role`(`user_id`, `role_id`) values (2, 2);
-insert into `user_role`(`user_id`, `role_id`) values (2, 3);
-
-	-- CUSTOMER with id=3 have only 1 role
-insert into `user_role`(`user_id`, `role_id`) values (3, 3);
 
 select * from `user`;
 select * from `role`;
 select * from `user_role`;
+select * from `user_authentication`;
 select * from `product`;
 select * from `category`;
 select * from `address`;
@@ -55,19 +36,7 @@ select * from `address`;
 
 
 -- USER AUTHENTICATION
-INSERT INTO `user_authentication` (`token`) 
-	VALUES ('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ._Xy7BQdvm-F6wGm3NJ7YxKWul1t7EC4v5XRej-OvMwA');
-INSERT INTO `user_authentication` (`token`) 
-	VALUES ('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxNTY3ODkwMTIzIiwibmFtZSI6IkpvaG4gSm9obiIsImlhdCI6MTUxNjIzOTAyMn0.MKlwF2j52XGe5JBCbCwK8LdrsrKHH64UM3bdXvobvDw');
-INSERT INTO `user_authentication` (`token`) 
-	VALUES ('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMzQ1Njc4OTAiLCJuYW1lIjoiTWFyayBMb25nIiwiaWF0IjoxNTE2MjM5MDIyfQ.hWteR-2tUVv2KsXj3JJhHPtUkVh0x-Y1jP4N7KnLJfE');
-
 select * from `user_authentication`;
-
--- UPDATE USER TABLE FOR AUTHENTICATION
-update `user` set `user_authentication_id`= 1  where `user`.id = 1;
-update `user` set `user_authentication_id`= 2  where `user`.id = 2;
-update `user` set `user_authentication_id`= 3  where `user`.id = 3;
 
 select * from `user`;
 

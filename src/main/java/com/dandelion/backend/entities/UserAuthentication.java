@@ -29,7 +29,13 @@ public class UserAuthentication {
     @CreationTimestamp
     private Date createdAt;
 
-    @OneToOne(mappedBy = "userAuthentication", optional = false, orphanRemoval = true)
+    @Column(name = "modified_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    @CreationTimestamp
+    private Date modifiedAt;
+
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "user_id")
     @ToString.Exclude
     private User user;
 

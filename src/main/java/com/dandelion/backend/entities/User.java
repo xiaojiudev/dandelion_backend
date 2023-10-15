@@ -69,10 +69,8 @@ public class User implements UserDetails {
 
 
     // One-to-One: UserAuthentication - user_authentication
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "user_authentication_id")
+    @OneToOne(mappedBy = "user", optional = false, orphanRemoval = true)
     @ToString.Exclude
-    @JsonIgnore
     private UserAuthentication userAuthentication;
 
     // Many-to-Many: with Role table - user_role

@@ -2,6 +2,7 @@ package com.dandelion.backend.services.impl;
 
 import com.dandelion.backend.entities.Role;
 import com.dandelion.backend.entities.User;
+import com.dandelion.backend.entities.UserAuthentication;
 import com.dandelion.backend.entities.enumType.RoleBase;
 import com.dandelion.backend.exceptions.ResourceAlreadyExistsException;
 import com.dandelion.backend.exceptions.ResourceNotFoundException;
@@ -11,6 +12,7 @@ import com.dandelion.backend.payloads.RegistrationRequest;
 import com.dandelion.backend.payloads.UserBody;
 import com.dandelion.backend.payloads.dto.UserDTO;
 import com.dandelion.backend.repositories.RoleRepo;
+import com.dandelion.backend.repositories.UserAuthenticationRepo;
 import com.dandelion.backend.repositories.UserRepo;
 import com.dandelion.backend.security.JwtUtilities;
 import com.dandelion.backend.services.UserService;
@@ -45,6 +47,8 @@ public class UserServiceImpl implements UserService {
 
     private final RoleRepo roleRepo;
 
+    private final UserAuthenticationRepo userAuthenticationRepo;
+
     private final PasswordEncoder passwordEncoder;
 
     private final JwtUtilities jwtUtilities;
@@ -68,9 +72,37 @@ public class UserServiceImpl implements UserService {
         List<String> roleNames = new ArrayList<>();
         user.getRoles().forEach(role -> roleNames.add(role.getRoleName().toString()));
 
-        String token = jwtUtilities.generateToken(user.getEmail(), roleNames);
 
-        return new BearerToken(token, "Bearer");
+        // Extract user_authentication table
+        UserAuthentication userAuthentication = userAuthenticationRepo.findByUser(user);
+
+
+        if (userAuthentication == null || (userAuthentication != null && jwtUtilities.isTokenExpired(userAuthentication.getToken()))) {
+            System.out.println("User_authentication table not exist or token expired");
+
+            String token = jwtUtilities.generateToken(user.getEmail(), roleNames);
+
+            if (userAuthentication == null) {
+                System.out.println("User_authentication table not exist");
+
+                userAuthentication = new UserAuthentication();
+
+                userAuthentication.setUser(user);
+            }
+
+            userAuthentication.setToken(token);
+            userAuthentication.setModifiedAt(null);
+
+            userAuthenticationRepo.save(userAuthentication);
+
+            return new BearerToken(token, "Bearer");
+        } else {
+            System.out.println("Token expired: " + jwtUtilities.isTokenExpired(userAuthentication.getToken()));
+            System.out.println("Token: " + userAuthentication.getToken());
+            System.out.println("User_authentication table exist and token unexpired");
+            return new BearerToken(userAuthentication.getToken(), "Bearer");
+        }
+
     }
 
     @Override
@@ -146,11 +178,17 @@ public class UserServiceImpl implements UserService {
         User user = userRepo.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id = " + userId));
 
+        boolean existingEmail = userRepo.existsByIdAndEmailIgnoreCase(userId, userBody.getEmail());
+
+        if (!existingEmail) {
+            throw new ResourceAlreadyExistsException("Email not available!");
+        }
+
         List<Role> userRoles = getUserRoleHelper(userBody.getRole());
 
         user.setEmail(userBody.getEmail());
         user.setPhone(userBody.getPhone());
-        user.setPassword(userBody.getPassword());
+        user.setPassword(passwordEncoder.encode(userBody.getPassword()));
         user.setFullName(userBody.getFullName());
         user.setGender(userBody.getGender());
         user.setAvatar(userBody.getAvatar());
