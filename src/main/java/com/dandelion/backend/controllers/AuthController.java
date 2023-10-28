@@ -3,6 +3,7 @@ package com.dandelion.backend.controllers;
 import com.dandelion.backend.payloads.BearerToken;
 import com.dandelion.backend.payloads.LoginRequest;
 import com.dandelion.backend.payloads.RegistrationRequest;
+import com.dandelion.backend.services.EmailSenderService;
 import com.dandelion.backend.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,11 +19,18 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final UserService userService;
-    
+
+    private final EmailSenderService emailSenderService;
+
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegistrationRequest registrationRequest) {
 
-        return userService.register(registrationRequest);
+        ResponseEntity<?> registerResult = userService.register(registrationRequest);
+
+        if (registerResult.getStatusCode() == HttpStatus.OK) {
+            emailSenderService.sendRegistrationEmail(registrationRequest.getEmail(), registrationRequest.getFullName());
+        }
+        return registerResult;
     }
 
     @PostMapping("/login")

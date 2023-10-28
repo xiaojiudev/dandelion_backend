@@ -41,7 +41,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-
     private final AuthenticationManager authenticationManager;
 
     private final UserRepo userRepo;
@@ -130,6 +129,7 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+
     @Override
     public Role saveRole(Role role) {
         return roleRepo.save(role);
@@ -205,7 +205,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO getUserById(Long userId) {
-        
+
         User user = userRepo.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id = " + userId));
 
