@@ -14,5 +14,7 @@ public interface CartItemRepo extends JpaRepository<ShoppingCartItem, Long> {
 
     List<ShoppingCartItem> findByShoppingCart_StatusAndShoppingCart_User(Boolean status, User user);
 
+    List<ShoppingCartItem> findByProduct_Id(Long id);
+
 
 }
