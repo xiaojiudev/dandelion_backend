@@ -2,11 +2,14 @@ package com.dandelion.backend.services.impl;
 
 import com.dandelion.backend.entities.Category;
 import com.dandelion.backend.entities.Product;
+import com.dandelion.backend.entities.ShoppingCartItem;
 import com.dandelion.backend.exceptions.ResourceAlreadyExistsException;
 import com.dandelion.backend.exceptions.ResourceNotFoundException;
 import com.dandelion.backend.payloads.ProductBody;
 import com.dandelion.backend.payloads.ProductResponse;
 import com.dandelion.backend.payloads.dto.ProductDTO;
+import com.dandelion.backend.repositories.CartItemRepo;
+import com.dandelion.backend.repositories.CartRepo;
 import com.dandelion.backend.repositories.CategoryRepo;
 import com.dandelion.backend.repositories.ProductRepo;
 import com.dandelion.backend.services.FileUpload;
@@ -35,6 +38,8 @@ public class ProductServiceImpl implements ProductService {
     private final CategoryRepo categoryRepo;
     private final ModelMapper modelMapper;
     private final FileUpload fileUpload;
+    private final CartRepo cartRepo;
+    private final CartItemRepo cartItemRepo;
 
     @Override
     public ProductDTO createProduct(MultipartFile multipartFile, ProductBody productBody) throws IOException {
@@ -132,12 +137,23 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepo.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found with id = " + productId));
 
+        List<ShoppingCartItem> cartItems = cartItemRepo.findByProduct_Id(productId);
+
+        if (!cartItems.isEmpty()) {
+            for (ShoppingCartItem cartItem : cartItems) {
+                cartItem.setProduct(null);
+            }
+            cartItemRepo.saveAll(cartItems);
+        }
+
         String mediaUrl = product.getMediaUrl();
         if (mediaUrl != null) {
             String publicId = fileUpload.extractPublicId(mediaUrl);
 
             fileUpload.deleteFile(publicId);
         }
+
+
         productRepo.delete(product);
     }
 
