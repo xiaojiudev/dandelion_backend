@@ -45,8 +45,8 @@ public class ProductServiceImpl implements ProductService {
     public ProductDTO createProduct(MultipartFile multipartFile, ProductBody productBody) throws IOException {
 
         // check category exists
-        Category category = categoryRepo.findById(productBody.getCategoryId())
-                .orElseThrow(() -> new ResourceNotFoundException("Category not found: " + productBody.getCategoryId()));
+        Category category = categoryRepo.findByNameIgnoreCase(productBody.getCategory())
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found: " + productBody.getCategory()));
 
 
         // check product name is available
@@ -97,8 +97,8 @@ public class ProductServiceImpl implements ProductService {
         }
 
         // check category exist
-        Category category = categoryRepo.findById(productBody.getCategoryId())
-                .orElseThrow(() -> new ResourceNotFoundException("Category id not found: " + productBody.getCategoryId()));
+        Category category = categoryRepo.findByNameIgnoreCase(productBody.getCategory())
+                .orElseThrow(() -> new ResourceNotFoundException("Category id not found: " + productBody.getCategory()));
 
 
         String mediaUrl = existingProduct.getMediaUrl();
