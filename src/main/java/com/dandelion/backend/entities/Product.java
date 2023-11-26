@@ -88,7 +88,7 @@ public class Product {
     private List<OrderDetail> orderDetails = new ArrayList<>();
 
     // One-to-Many with shopping_cart_item table
-    @OneToMany(mappedBy = "product", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     @ToString.Exclude
     private List<ShoppingCartItem> shoppingCartItems = new ArrayList<>();
 }
