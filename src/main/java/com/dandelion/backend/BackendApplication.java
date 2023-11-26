@@ -42,9 +42,9 @@ public class BackendApplication implements CommandLineRunner {
         createRoleIfNotExists(RoleBase.MANAGER);
         createRoleIfNotExists(RoleBase.CUSTOMER);
 
-        createUserIfNotExists("AdminFullName", "admin@gmail.com", RoleBase.ADMIN, RoleBase.MANAGER, RoleBase.CUSTOMER);
-        createUserIfNotExists("ManagerFullName", "manager@gmail.com", RoleBase.MANAGER, RoleBase.CUSTOMER);
-        createUserIfNotExists("CustomerFullName", "customer@gmail.com", RoleBase.CUSTOMER);
+        createUserIfNotExists("Phat Ly Admin", "admin@gmail.com", RoleBase.ADMIN, RoleBase.MANAGER, RoleBase.CUSTOMER);
+        createUserIfNotExists("Xiao Jiu Manager", "manager@gmail.com", RoleBase.MANAGER, RoleBase.CUSTOMER);
+        createUserIfNotExists("John Customer", "customer@gmail.com", RoleBase.CUSTOMER);
     }
 
     private void createUserIfNotExists(String fullName, String email, RoleBase... roleBases) {
@@ -54,7 +54,7 @@ public class BackendApplication implements CommandLineRunner {
             user.setEmail(email);
             user.setPassword(passwordEncoder.encode("password"));
             user.setRoles(getRoles(roleBases));
-            user.setFullName("");
+            user.setFullName(fullName);
             user.setPhone("");
             userRepo.save(user);
         }
