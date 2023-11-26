@@ -18,4 +18,5 @@ public class ShopOrderDetailDTO {
     private String productName;
     private Integer quantity;
     private BigDecimal price;
+    private String media_url;
 }

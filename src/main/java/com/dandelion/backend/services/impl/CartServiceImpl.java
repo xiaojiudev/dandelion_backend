@@ -38,7 +38,7 @@ public class CartServiceImpl implements CartService {
     private final CartItemRepo cartItemRepo;
 
     @Override
-    public void addToCart(Long userId, AddToCartBody addToCartBody) {
+    public CartDTO addToCart(Long userId, AddToCartBody addToCartBody) {
 
         User user = userRepo.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found!"));
@@ -67,7 +67,13 @@ public class CartServiceImpl implements CartService {
         // if exist increase quantity else add this product to cart
         if (existingItemOpt.isPresent()) {
             ShoppingCartItem existingItem = existingItemOpt.get();
-            existingItem.setQuantity(quantity + existingItem.getQuantity());
+
+            if (quantity == 1) {
+                existingItem.setQuantity(quantity + existingItem.getQuantity());
+            } else {
+                existingItem.setQuantity(quantity);
+            }
+
             cartItemRepo.save(existingItem);
         } else {
             ShoppingCartItem cartItem = new ShoppingCartItem();
@@ -78,6 +84,9 @@ public class CartServiceImpl implements CartService {
             cartItemRepo.save(cartItem);
         }
 
+        CartDTO cartDTO = getDetailCart(userId);
+
+        return cartDTO;
     }
 
     @Override

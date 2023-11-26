@@ -5,7 +5,7 @@ import com.dandelion.backend.payloads.dto.CartDTO;
 
 public interface CartService {
 
-    void addToCart(Long userId, AddToCartBody addToCartBody);
+    CartDTO addToCart(Long userId, AddToCartBody addToCartBody);
 
     void removeAnItem(Long userId, Long productId);
 

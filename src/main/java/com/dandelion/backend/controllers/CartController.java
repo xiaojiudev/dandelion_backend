@@ -21,13 +21,15 @@ public class CartController {
     private final CurrentUserUtil currentUserUtil;
 
     @PostMapping("/carts")
-    public ResponseEntity<ApiResponse> addToCart(@RequestBody AddToCartBody addToCartBody) {
+    public ResponseEntity<CartDTO> addToCart(@RequestBody AddToCartBody addToCartBody) {
 
         Long userId = currentUserUtil.getCurrentUser().getId();
 
-        cartService.addToCart(userId, addToCartBody);
+        return new ResponseEntity<>(cartService.addToCart(userId, addToCartBody), HttpStatus.OK);
 
-        return new ResponseEntity<>(new ApiResponse("Item added to the cart successfully", true), HttpStatus.OK);
+//        cartService.addToCart(userId, addToCartBody);
+
+//        return new ResponseEntity<>(new ApiResponse("Item added to the cart successfully", true), HttpStatus.OK);
     }
 
     @DeleteMapping("/carts/{cartItemId}")

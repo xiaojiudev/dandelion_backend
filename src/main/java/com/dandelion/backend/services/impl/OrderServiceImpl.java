@@ -216,6 +216,7 @@ public class OrderServiceImpl implements OrderService {
                                 shopOrderDetailDTO.setProductName(itemDetail.getProduct().getName());
                                 shopOrderDetailDTO.setPrice(itemDetail.getPrice());
                                 shopOrderDetailDTO.setQuantity(itemDetail.getQuantity());
+                                shopOrderDetailDTO.setMedia_url(itemDetail.getProduct().getMediaUrl());
 
                                 return shopOrderDetailDTO;
                             })

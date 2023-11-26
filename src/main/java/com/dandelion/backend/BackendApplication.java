@@ -1,8 +1,10 @@
 package com.dandelion.backend;
 
+import com.dandelion.backend.entities.Address;
 import com.dandelion.backend.entities.Role;
 import com.dandelion.backend.entities.User;
 import com.dandelion.backend.entities.enumType.RoleBase;
+import com.dandelion.backend.repositories.AddressRepo;
 import com.dandelion.backend.repositories.RoleRepo;
 import com.dandelion.backend.repositories.UserRepo;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +30,7 @@ public class BackendApplication implements CommandLineRunner {
     private final PasswordEncoder passwordEncoder;
 
     private final AuthenticationManager authenticationManager;
+    private final AddressRepo addressRepo;
 
     public static void main(String[] args) {
         SpringApplication.run(BackendApplication.class, args);
@@ -49,6 +52,7 @@ public class BackendApplication implements CommandLineRunner {
 
     private void createUserIfNotExists(String fullName, String email, RoleBase... roleBases) {
         if (!userRepo.existsByEmailIgnoreCase(email)) {
+
             User user = new User();
             user.setFullName(fullName);
             user.setEmail(email);
@@ -57,6 +61,12 @@ public class BackendApplication implements CommandLineRunner {
             user.setFullName(fullName);
             user.setPhone("");
             userRepo.save(user);
+
+            Address address = new Address();
+            address.setAddressLine1("137/24 Mau Than street, Ninh Kieu district, Can Tho city");
+            address.setUser(user);
+            address.setIsDefault(true);
+            addressRepo.save(address);
         }
     }
 
