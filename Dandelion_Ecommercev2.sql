@@ -68,7 +68,7 @@ CREATE TABLE `product` (
   `id` bigint PRIMARY KEY AUTO_INCREMENT,
   `category_id` bigint default null,
   `name` varchar(255) unique NOT NULL,
-  `weight` double(10,2) unsigned NOT NULL,
+  `weight` double(10,2) unsigned NULL,
   `quantity` int unsigned NOT NULL default 0,
   `media_url` text NOT NULL,
   `price` decimal(10,2) NOT NULL,
