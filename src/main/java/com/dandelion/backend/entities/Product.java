@@ -28,7 +28,7 @@ public class Product {
     @Column(name = "name", nullable = false, unique = true)
     private String name;
 
-    @Column(name = "weight", nullable = false, precision = 10, scale = 2)
+    @Column(name = "weight", precision = 10, scale = 2)
     private Double weight;
 
     @Column(name = "quantity", nullable = false)
