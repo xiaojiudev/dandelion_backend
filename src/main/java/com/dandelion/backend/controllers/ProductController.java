@@ -34,7 +34,7 @@ public class ProductController {
     }
 
     // update
-    @PutMapping("/products/{productId}")
+    @PatchMapping("/products/{productId}")
     public ResponseEntity<ProductDTO> updateProduct(
             @PathVariable("productId") Long productId,
             @RequestParam(value = "media_file", required = false) MultipartFile mediaFile,
