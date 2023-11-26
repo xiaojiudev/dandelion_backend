@@ -74,7 +74,6 @@ public class UserServiceImpl implements UserService {
         List<String> roleNames = new ArrayList<>();
         user.getRoles().forEach(role -> roleNames.add(role.getRoleName().toString()));
 
-
         // Extract user_authentication table
         UserAuthentication userAuthentication = userAuthenticationRepo.findByUser(user);
 
@@ -97,11 +96,11 @@ public class UserServiceImpl implements UserService {
 
             userAuthenticationRepo.save(userAuthentication);
 
-            return new BearerToken(token, "Bearer");
+            return new BearerToken(user.getFullName(), user.getEmail(), user.getAvatar(), token, "Bearer", roleNames);
         }
 
         // Default user_authentication exist and token valid
-        return new BearerToken(userAuthentication.getToken(), "Bearer");
+        return new BearerToken(user.getFullName(), user.getEmail(), user.getAvatar(), userAuthentication.getToken(), "Bearer", roleNames);
     }
 
     @Override
@@ -125,7 +124,7 @@ public class UserServiceImpl implements UserService {
 
             String token = jwtUtilities.generateToken(registrationRequest.getEmail(), Collections.singletonList(role.getRoleName().toString()));
 
-            return new ResponseEntity<>(new BearerToken(token, "Bearer "), HttpStatus.OK);
+            return new ResponseEntity<>(new BearerToken(user.getFullName(), user.getEmail(), user.getAvatar(), token, "Bearer ", List.of(role.toString())), HttpStatus.OK);
         }
     }
 
