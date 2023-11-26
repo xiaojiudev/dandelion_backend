@@ -24,7 +24,7 @@ public class ProductBody {
     private Double weight;
 
     private Integer quantity;
-    
+
     private BigDecimal price;
 
     @NotBlank(message = "Information not blank!")
@@ -38,8 +38,8 @@ public class ProductBody {
     @Size(max = 500, message = "Tag max with 500 characters")
     private String tag;
 
-    @JsonProperty("category_id")
-    @NotNull(message = "Category ID not null!")
-    private Long categoryId;
+    @JsonProperty("category")
+    @NotNull(message = "Category not null!")
+    private String category;
 
 }
