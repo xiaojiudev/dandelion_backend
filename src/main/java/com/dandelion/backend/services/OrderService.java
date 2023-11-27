@@ -1,6 +1,7 @@
 package com.dandelion.backend.services;
 
 
+import com.dandelion.backend.entities.enumType.Order;
 import com.dandelion.backend.payloads.OrderRequest;
 import com.dandelion.backend.payloads.dto.ShopOrderDTO;
 
@@ -10,9 +11,7 @@ public interface OrderService {
 
     void placeOrder(Long userId, OrderRequest orderRequest);
 
-    void acceptOrder(Long orderId);
-
-    void cancelOrder(Long orderId);
+    ShopOrderDTO updateOrderStatus(Long orderId, Order status);
 
     List<ShopOrderDTO> getAllOrders();
 

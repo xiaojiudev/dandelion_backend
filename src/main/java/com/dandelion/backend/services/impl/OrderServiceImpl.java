@@ -147,14 +147,14 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void acceptOrder(Long orderId) {
+    public ShopOrderDTO updateOrderStatus(Long orderId, Order status) {
         ShopOrder shopOrder = orderRepo.findById(orderId)
                 .orElseThrow(() -> new ResourceNotFoundException("Order not found!"));
 
-        OrderStatus orderStatus = orderStatusRepo.findByStatus(Order.DELIVERING)
+        OrderStatus orderStatus = orderStatusRepo.findByStatus(status)
                 .orElseGet(() -> {
                     OrderStatus newStatus = OrderStatus.builder()
-                            .status(Order.DELIVERING)
+                            .status(status)
                             .build();
 
                     orderStatusRepo.save(newStatus);
@@ -162,31 +162,67 @@ public class OrderServiceImpl implements OrderService {
                     return newStatus;
                 });
 
-        shopOrder.setOrderStatus(orderStatus);
+        if (status == Order.CANCELED) {
+            // Check if payment method is COD
+            OrderTransaction orderTransaction = shopOrder.getOrderTransaction();
+            if (orderTransaction != null && orderTransaction.getPaymentMethod().getName().equals("COD")) {
+                orderTransaction.setTransactionStatus(TransactionStatus.FAILED);
+                orderTransactionRepo.save(orderTransaction);
+            }
+        }
 
+        if (status == Order.DELIVERING) {
+            // Check if payment method is COD
+            OrderTransaction orderTransaction = shopOrder.getOrderTransaction();
+            if (orderTransaction != null && orderTransaction.getPaymentMethod().getName().equals("COD")) {
+                orderTransaction.setTransactionStatus(TransactionStatus.PENDING);
+                orderTransactionRepo.save(orderTransaction);
+            }
+        }
+
+        if (status == Order.COMPLETED) {
+            // Check if payment method is COD
+            OrderTransaction orderTransaction = shopOrder.getOrderTransaction();
+            if (orderTransaction != null && orderTransaction.getPaymentMethod().getName().equals("COD")) {
+                orderTransaction.setTransactionStatus(TransactionStatus.SUCCESS);
+                orderTransactionRepo.save(orderTransaction);
+            }
+        }
+        shopOrder.setOrderStatus(orderStatus);
         orderRepo.save(shopOrder);
+
+        ShopOrderDTO shopOrderDTO = new ShopOrderDTO();
+        shopOrderDTO.setId(shopOrder.getId());
+        shopOrderDTO.setUserFullName(shopOrder.getUserFullName());
+        shopOrderDTO.setUserComment(shopOrder.getUserComment());
+        shopOrderDTO.setUserPhone(shopOrder.getUserPhone());
+        shopOrderDTO.setShippingAddress(shopOrder.getShippingAddress());
+        shopOrderDTO.setMerchandiseTotal(shopOrder.getMerchandiseTotal());
+        shopOrderDTO.setShippingFee(shopOrder.getShippingFee());
+        shopOrderDTO.setTotal(shopOrder.getTotal());
+        shopOrderDTO.setPaymentMethod(shopOrder.getOrderTransaction().getPaymentMethod().getName());
+        shopOrderDTO.setOrderStatus(shopOrder.getOrderStatus().getStatus());
+        shopOrderDTO.setTransactionStatus(shopOrder.getOrderTransaction().getTransactionStatus());
+        shopOrderDTO.setTrackingCode(shopOrder.getTrackingCode());
+
+        List<ShopOrderDetailDTO> shopOrderDetailDTOs = shopOrder.getOrderDetails().stream()
+                .map(itemDetail -> {
+                    ShopOrderDetailDTO shopOrderDetailDTO = new ShopOrderDetailDTO();
+                    shopOrderDetailDTO.setId(itemDetail.getId());
+                    shopOrderDetailDTO.setProductName(itemDetail.getProduct().getName());
+                    shopOrderDetailDTO.setPrice(itemDetail.getPrice());
+                    shopOrderDetailDTO.setQuantity(itemDetail.getQuantity());
+                    shopOrderDetailDTO.setMedia_url(itemDetail.getProduct().getMediaUrl());
+
+                    return shopOrderDetailDTO;
+                })
+                .collect(Collectors.toList());
+
+        shopOrderDTO.setOrderDetails(shopOrderDetailDTOs);
+
+        return shopOrderDTO;
     }
 
-    @Override
-    public void cancelOrder(Long orderId) {
-        ShopOrder shopOrder = orderRepo.findById(orderId)
-                .orElseThrow(() -> new ResourceNotFoundException("Order not found!"));
-
-        OrderStatus orderStatus = orderStatusRepo.findByStatus(Order.CANCELED)
-                .orElseGet(() -> {
-                    OrderStatus newStatus = OrderStatus.builder()
-                            .status(Order.CANCELED)
-                            .build();
-
-                    orderStatusRepo.save(newStatus);
-
-                    return newStatus;
-                });
-
-        shopOrder.setOrderStatus(orderStatus);
-
-        orderRepo.save(shopOrder);
-    }
 
     @Override
     public List<ShopOrderDTO> getAllOrders() {

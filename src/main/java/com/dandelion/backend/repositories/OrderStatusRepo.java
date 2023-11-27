@@ -9,5 +9,7 @@ import java.util.Optional;
 public interface OrderStatusRepo extends JpaRepository<OrderStatus, Long> {
     Optional<OrderStatus> findByStatus(Order status);
 
-    
+    OrderStatus findByShopOrders_Id(Long id);
+
+
 }

@@ -1,5 +1,6 @@
 package com.dandelion.backend.controllers;
 
+import com.dandelion.backend.entities.enumType.Order;
 import com.dandelion.backend.payloads.OrderRequest;
 import com.dandelion.backend.payloads.dto.ShopOrderDTO;
 import com.dandelion.backend.services.OrderService;
@@ -27,14 +28,18 @@ public class PlaceOrderController {
         orderService.placeOrder(userId, orderRequest);
     }
 
-    @PutMapping("/orders/{orderId}/accept")
-    public void acceptOrder(@PathVariable("orderId") Long orderId) {
-        orderService.acceptOrder(orderId);
-    }
+    @PatchMapping("/orders/{orderId}/update/{status}")
+    public ResponseEntity<ShopOrderDTO> updateOrderStatus(@PathVariable("orderId") Long orderId, @PathVariable("status") String status) {
 
-    @PutMapping("/orders/{orderId}/cancel")
-    public void cancelOrder(@PathVariable("orderId") Long orderId) {
-        orderService.cancelOrder(orderId);
+        Order orderStatus;
+
+        try {
+            orderStatus = Order.valueOf(status.toUpperCase());
+        } catch (IllegalArgumentException ex) {
+            orderStatus = Order.PROCESSING;
+        }
+
+        return new ResponseEntity<>(orderService.updateOrderStatus(orderId, orderStatus), HttpStatus.OK);
     }
 
     @GetMapping("/orders/all")
