@@ -97,6 +97,14 @@ public class OrderServiceImpl implements OrderService {
                 })
                 .collect(Collectors.toList());
 
+        for (OrderDetail orderDetail : orderDetails) {
+            Product product = orderDetail.getProduct();
+            int remainingQuantity = product.getQuantity() - orderDetail.getQuantity();
+            if (remainingQuantity < 0) {
+                throw new RuntimeException("Insufficient quantity available for product: " + product.getName());
+            }
+            product.setQuantity(remainingQuantity);
+        }
 
         // create status
         OrderStatus orderStatus = orderStatusRepo.findByStatus(Order.PROCESSING)
