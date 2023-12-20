@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -54,36 +53,20 @@ public class ProductController {
     // get all
     @GetMapping("/products")
     public ResponseEntity<ProductResponse> getAllProducts(
+            @RequestParam(value = "search", required = false) String search,
             @RequestParam(value = "page", defaultValue = AppConstants.PAGE_NUMBER, required = false) Integer pageNumber,
             @RequestParam(value = "size", defaultValue = AppConstants.PAGE_SIZE, required = false) Integer pageSize,
             @RequestParam(value = "sortBy", defaultValue = AppConstants.SORT_BY, required = false) String sortBy,
-            @RequestParam(value = "sortDir", defaultValue = AppConstants.SORT_DIR, required = false) String sortDir
+            @RequestParam(value = "sortDir", defaultValue = AppConstants.SORT_DIR, required = false) String sortDir,
+            @RequestParam(value = "category", required = false) String category
     ) {
-        return new ResponseEntity<>(productService.getAllProducts(pageNumber, pageSize, sortBy, sortDir), HttpStatus.OK);
+        return new ResponseEntity<>(productService.getAllProducts(search, pageNumber, pageSize, sortBy, sortDir, category), HttpStatus.OK);
     }
 
     // get one
     @GetMapping("/products/{productId}")
-    public ResponseEntity<ProductDTO> getProduct(@PathVariable("productId") Long productId) {
+    public ResponseEntity<ProductDTO> getProductById(@PathVariable("productId") Long productId) {
         return new ResponseEntity<>(productService.getProductById(productId), HttpStatus.OK);
-    }
-
-    // get by category id
-    @GetMapping("/products/cate")
-    public ResponseEntity<List<ProductDTO>> getProductsByCategory(@RequestParam("category") String category) {
-        return new ResponseEntity<>(productService.getProductsByCategory(category), HttpStatus.OK);
-    }
-
-    // get by category id
-    @GetMapping("/products/tag")
-    public ResponseEntity<List<ProductDTO>> getProductsByTag(@RequestParam("tag") String tag) {
-        return new ResponseEntity<>(productService.getProductsByTag(tag), HttpStatus.OK);
-    }
-
-    // search
-    @GetMapping("/products/search")
-    public ResponseEntity<List<ProductDTO>> searchProduct(@RequestParam("keyword") String keyword) {
-        return new ResponseEntity<>(productService.searchProducts(keyword), HttpStatus.OK);
     }
 
 }

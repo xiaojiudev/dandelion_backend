@@ -158,14 +158,27 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductResponse getAllProducts(Integer pageNumber, Integer pageSize, String sortBy, String sortDir) {
-
+    public ProductResponse getAllProducts(String search, Integer pageNumber, Integer pageSize, String sortBy, String sortDir, String category) {
+        Page<Product> pageProduct;
         Sort sort = sortDir.equalsIgnoreCase("asc") ?
                 Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
-
         Pageable paging = PageRequest.of(pageNumber, pageSize, sort);
 
-        Page<Product> pageProduct = productRepo.findAll(paging);
+        if (category != null && !category.isEmpty() && !category.equalsIgnoreCase("All")) {
+            Category tempCategory = categoryRepo.findByNameIgnoreCase(category)
+                    .orElseThrow(() -> new ResourceNotFoundException("Category not found: " + category));
+
+            if (search != null && !search.isEmpty()) {
+                pageProduct = productRepo.findAllByNameContainsIgnoreCaseAndCategory(search, tempCategory, paging);
+            } else {
+                pageProduct = productRepo.findAllByCategory(tempCategory, paging);
+            }
+        } else if (search != null && !search.isEmpty()) {
+            pageProduct = productRepo.findAllByNameContainsIgnoreCase(search, paging);
+        } else {
+            pageProduct = productRepo.findAll(paging);
+        }
+
         List<Product> products = pageProduct.getContent();
 
         List<ProductDTO> productDTOs = products.stream()
@@ -200,69 +213,5 @@ public class ProductServiceImpl implements ProductService {
 
         return productDTO;
     }
-
-    @Override
-    public List<ProductDTO> getProductsByCategory(String category) {
-
-        Category tempCate = categoryRepo.findByNameIgnoreCase(category)
-                .orElseThrow(() -> new ResourceNotFoundException("Category not found with id = " + category));
-
-        List<Product> products = productRepo.findAllByCategory(tempCate);
-
-        if (products.isEmpty()) {
-            throw new ResourceNotFoundException("Product not found!");
-        }
-
-        List<ProductDTO> productDTOs = products.stream()
-                .map(item -> {
-                    ProductDTO productDTO = modelMapper.map(item, ProductDTO.class);
-                    productDTO.setCategory(item.getCategory() == null ? null : item.getCategory().getName());
-
-                    return productDTO;
-                })
-                .collect(Collectors.toList());
-
-        return productDTOs;
-    }
-
-    @Override
-    public List<ProductDTO> getProductsByTag(String tag) {
-        List<Product> products = productRepo.findByTagContainsIgnoreCase(tag);
-
-        if (products.isEmpty()) {
-            throw new ResourceNotFoundException("Products not found!");
-        }
-
-        List<ProductDTO> productDTOs = products.stream()
-                .map(item -> {
-                    ProductDTO productDTO = modelMapper.map(item, ProductDTO.class);
-                    productDTO.setCategory(item.getCategory() == null ? null : item.getCategory().getName());
-
-                    return productDTO;
-                })
-                .collect(Collectors.toList());
-
-        return productDTOs;
-    }
-
-    @Override
-    public List<ProductDTO> searchProducts(String keyword) {
-
-        List<Product> matchingProducts = productRepo.findAllByNameContainingIgnoreCaseOrCategory_NameContainingIgnoreCase(keyword, keyword);
-
-        if (matchingProducts.isEmpty()) {
-            throw new ResourceNotFoundException("Product not found!");
-        }
-
-        List<ProductDTO> matchingProductsDTOs = matchingProducts.stream()
-                .map(item -> {
-                    ProductDTO productDTO = modelMapper.map(item, ProductDTO.class);
-                    productDTO.setCategory(item.getCategory() == null ? null : item.getCategory().getName());
-
-                    return productDTO;
-                })
-                .collect(Collectors.toList());
-
-        return matchingProductsDTOs;
-    }
+    
 }
