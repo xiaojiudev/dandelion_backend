@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -23,7 +24,7 @@ public class ProductDTO {
     private Integer quantity;
 
     @JsonProperty("media_url")
-    private String mediaUrl;
+    private List<String> mediaUrl;
 
     private BigDecimal price;
 

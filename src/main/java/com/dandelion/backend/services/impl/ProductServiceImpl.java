@@ -25,6 +25,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -183,8 +185,19 @@ public class ProductServiceImpl implements ProductService {
 
         List<ProductDTO> productDTOs = products.stream()
                 .map(item -> {
-                    ProductDTO productDTO = modelMapper.map(item, ProductDTO.class);
-                    productDTO.setCategory(item.getCategory() == null ? null : item.getCategory().getName());
+                    ProductDTO productDTO = new ProductDTO();
+
+                    productDTO.setId(item.getId());
+                    productDTO.setName(item.getName());
+                    productDTO.setWeight(item.getWeight());
+                    productDTO.setQuantity(item.getQuantity());
+                    productDTO.setMediaUrl(Collections.singletonList(item.getMediaUrl().split(",")[0]));
+                    productDTO.setPrice(item.getPrice());
+                    productDTO.setDescription(item.getDescription());
+                    productDTO.setInformation(item.getInformation());
+                    productDTO.setTag(item.getTag());
+                    productDTO.setCategory(item.getCategory().getName());
+
                     return productDTO;
 
                 })
@@ -208,10 +221,19 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepo.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found with id = " + productId));
 
-        ProductDTO productDTO = modelMapper.map(product, ProductDTO.class);
-        productDTO.setCategory(product.getCategory() == null ? null : product.getCategory().getName());
+        ProductDTO productDTO = new ProductDTO();
+        productDTO.setId(product.getId());
+        productDTO.setName(product.getName());
+        productDTO.setWeight(product.getWeight());
+        productDTO.setQuantity(product.getQuantity());
+        productDTO.setMediaUrl(Arrays.asList(product.getMediaUrl().split(",")));
+        productDTO.setPrice(product.getPrice());
+        productDTO.setDescription(product.getDescription());
+        productDTO.setInformation(product.getInformation());
+        productDTO.setTag(product.getTag());
+        productDTO.setCategory(product.getCategory().getName());
 
         return productDTO;
     }
-    
+
 }
