@@ -1,6 +1,4 @@
 use dandelion;
-
-
 -- ROLES
 -- insert into `role`(`role_name`) values ("ADMIN");
 -- insert into `role`(`role_name`) values ("MANAGER");

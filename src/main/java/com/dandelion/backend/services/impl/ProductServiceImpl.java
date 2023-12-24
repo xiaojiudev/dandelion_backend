@@ -56,7 +56,15 @@ public class ProductServiceImpl implements ProductService {
             throw new ResourceAlreadyExistsException("Product already exists with name = " + productBody.getName());
         }
 
+        // Upload the files and get their respective URLs
         String mediaUrl = fileUpload.uploadFile(multipartFile);
+
+        // Sort the media URLs alphabetically
+        List<String> sortedMediaUrls = Arrays.asList(mediaUrl);
+        Collections.sort(sortedMediaUrls);
+
+        // Concatenate sorted media URLs separated by ","
+        String concatenatedMediaUrls = String.join(",", sortedMediaUrls);
 
         // create a new product using a builder
         Product product = Product.builder()
@@ -64,7 +72,7 @@ public class ProductServiceImpl implements ProductService {
                 .weight(productBody.getWeight())
                 .quantity(productBody.getQuantity())
                 .price(productBody.getPrice())
-                .mediaUrl(mediaUrl)
+                .mediaUrl(concatenatedMediaUrls)
                 .description(productBody.getDescription())
                 .information(productBody.getInformation())
                 .tag(productBody.getTag())
@@ -76,6 +84,7 @@ public class ProductServiceImpl implements ProductService {
 
         // convert into DTO
         ProductDTO newProductDTO = modelMapper.map(newProduct, ProductDTO.class);
+        newProductDTO.setMediaUrl(Collections.singletonList(concatenatedMediaUrls.split(",")[0]));
         newProductDTO.setCategory(category.getName());
 
         return newProductDTO;

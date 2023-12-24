@@ -120,7 +120,7 @@ public class User implements UserDetails {
         }
 
         if (this.avatar == null) {
-            setAvatar("https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/User-avatar.svg/2048px-User-avatar.svg.png");
+            setAvatar("https://res.cloudinary.com/de8xbko8y/image/upload/v1703263334/uploads/img-b7b50cc5ad1349aac6bbbfcb0241f711_orxvwt.jpg");
         }
     }
 
