@@ -3,6 +3,7 @@ package com.dandelion.backend.controllers;
 
 import com.dandelion.backend.payloads.AddToCartBody;
 import com.dandelion.backend.payloads.ApiResponse;
+import com.dandelion.backend.payloads.ProductIdsRequest;
 import com.dandelion.backend.payloads.dto.CartDTO;
 import com.dandelion.backend.services.CartService;
 import com.dandelion.backend.utils.CurrentUserUtil;
@@ -10,6 +11,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -27,29 +30,17 @@ public class CartController {
 
         return new ResponseEntity<>(cartService.addToCart(userId, addToCartBody), HttpStatus.OK);
 
-//        cartService.addToCart(userId, addToCartBody);
-
-//        return new ResponseEntity<>(new ApiResponse("Item added to the cart successfully", true), HttpStatus.OK);
-    }
-
-    @DeleteMapping("/carts/{cartItemId}")
-    public ResponseEntity<ApiResponse> removeAnItem(@PathVariable("cartItemId") Long cartItemId) {
-
-        Long userId = currentUserUtil.getCurrentUser().getId();
-
-        cartService.removeAnItem(userId, cartItemId);
-
-        return new ResponseEntity<>(new ApiResponse("Delete item successfully", true), HttpStatus.OK);
     }
 
     @DeleteMapping("/carts")
-    public ResponseEntity<ApiResponse> removeAllItems() {
+    public ResponseEntity<ApiResponse> removeItems(@RequestBody ProductIdsRequest request) {
 
         Long userId = currentUserUtil.getCurrentUser().getId();
+        List<Long> productIds = request.getProductIds();
 
-        cartService.removeAllItems(userId);
+        cartService.removeItems(userId, productIds);
 
-        return new ResponseEntity<>(new ApiResponse("Delete all items successfully", true), HttpStatus.OK);
+        return new ResponseEntity<>(new ApiResponse("Delete items successfully", true), HttpStatus.OK);
     }
 
     @GetMapping("/carts")

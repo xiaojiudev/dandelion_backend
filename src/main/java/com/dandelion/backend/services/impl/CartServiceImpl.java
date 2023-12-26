@@ -90,34 +90,21 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public void removeAnItem(Long userId, Long productId) {
-        User user = userRepo.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found!"));
-
-        Product product = productRepo.findById(productId)
-                .orElseThrow(() -> new ResourceNotFoundException("Product not found!"));
-
-        ShoppingCart cart = cartRepo.findByStatusAndUser_Id(true, user.getId())
-                .orElseThrow(() -> new ResourceNotFoundException("Cart not found!"));
-
-        ShoppingCartItem cartItem = cartItemRepo.findByShoppingCart_IdAndProduct_Id(cart.getId(), product.getId())
-                .orElseThrow(() -> new ResourceNotFoundException("Cart item not found"));
-
-        cartItemRepo.delete(cartItem);
-
-    }
-
-    @Override
-    public void removeAllItems(Long userId) {
+    public void removeItems(Long userId, List<Long> productIds) {
         User user = userRepo.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found!"));
 
         ShoppingCart cart = cartRepo.findByStatusAndUser_Id(true, user.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Cart not found!"));
 
-        List<ShoppingCartItem> cartItems = cartItemRepo.findByShoppingCart_Id(cart.getId());
+        for (Long productId : productIds) {
+            Product product = productRepo.findById(productId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Product not found!"));
+            ShoppingCartItem cartItem = cartItemRepo.findByShoppingCart_IdAndProduct_Id(cart.getId(), product.getId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Cart item not found"));
 
-        cartItemRepo.deleteAll(cartItems);
+            cartItemRepo.delete(cartItem);
+        }
 
     }
 
