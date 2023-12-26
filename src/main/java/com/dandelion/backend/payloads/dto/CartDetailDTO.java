@@ -17,9 +17,12 @@ public class CartDetailDTO {
     private Long productId;
     private String name;
     private Integer quantity;
+    @JsonProperty("available_quantity")
+    private Integer availableQuantity;
     @JsonProperty("media_url")
     private String mediaUrl;
-    private BigDecimal price;
+    @JsonProperty("unit_price")
+    private BigDecimal unitPrice;
     @JsonProperty("item_sub_total")
     private BigDecimal itemSubTotal;
     private String description;

@@ -141,10 +141,11 @@ public class CartServiceImpl implements CartService {
                     tempItem.setProductId(tempProduct.getId());
                     tempItem.setName(tempProduct.getName());
                     tempItem.setMediaUrl(tempProduct.getMediaUrl().split(",")[0]);
-                    tempItem.setPrice(price);
+                    tempItem.setUnitPrice(price);
                     tempItem.setDescription(tempProduct.getDescription());
                     tempItem.setInformation(tempProduct.getInformation());
                     tempItem.setQuantity(quantity);
+                    tempItem.setAvailableQuantity(tempProduct.getQuantity());
                     tempItem.setItemSubTotal(itemSubTotal);
 
                     return tempItem;
