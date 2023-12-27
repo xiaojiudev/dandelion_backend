@@ -1,17 +1,11 @@
 package com.dandelion.backend.services.impl;
 
-import com.dandelion.backend.entities.Product;
-import com.dandelion.backend.entities.ShoppingCart;
-import com.dandelion.backend.entities.ShoppingCartItem;
-import com.dandelion.backend.entities.User;
+import com.dandelion.backend.entities.*;
 import com.dandelion.backend.exceptions.ResourceNotFoundException;
 import com.dandelion.backend.payloads.AddToCartBody;
 import com.dandelion.backend.payloads.dto.CartDTO;
 import com.dandelion.backend.payloads.dto.CartDetailDTO;
-import com.dandelion.backend.repositories.CartItemRepo;
-import com.dandelion.backend.repositories.CartRepo;
-import com.dandelion.backend.repositories.ProductRepo;
-import com.dandelion.backend.repositories.UserRepo;
+import com.dandelion.backend.repositories.*;
 import com.dandelion.backend.services.CartService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -37,6 +31,8 @@ public class CartServiceImpl implements CartService {
 
     private final CartItemRepo cartItemRepo;
 
+    private final ShippingMethodRepo shippingMethodRepo;
+
     @Override
     public CartDTO addToCart(Long userId, AddToCartBody addToCartBody) {
 
@@ -47,8 +43,8 @@ public class CartServiceImpl implements CartService {
         Product product = productRepo.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found!"));
 
-        Integer quantity = (addToCartBody.getQuantity() != null && addToCartBody.getQuantity() > 0)
-                ? addToCartBody.getQuantity() : 1;
+        Integer quantity = (addToCartBody.getQuantity() != null && addToCartBody.getQuantity() >= 0)
+                ? addToCartBody.getQuantity() : 0;
 
         ShoppingCart cart = cartRepo.findByStatusAndUser_Id(true, user.getId())
                 .orElseGet(() -> {
@@ -68,8 +64,9 @@ public class CartServiceImpl implements CartService {
         if (existingItemOpt.isPresent()) {
             ShoppingCartItem existingItem = existingItemOpt.get();
 
-            if (quantity == 1) {
-                existingItem.setQuantity(quantity + existingItem.getQuantity());
+            // quantity = 0 meaning increase existing item by 1
+            if (quantity == 0) {
+                existingItem.setQuantity(existingItem.getQuantity() + 1);
             } else {
                 existingItem.setQuantity(quantity);
             }
@@ -79,7 +76,7 @@ public class CartServiceImpl implements CartService {
             ShoppingCartItem cartItem = new ShoppingCartItem();
             cartItem.setProduct(product);
             cartItem.setShoppingCart(cart);
-            cartItem.setQuantity(quantity);
+            cartItem.setQuantity(1);
 
             cartItemRepo.save(cartItem);
         }
@@ -152,12 +149,15 @@ public class CartServiceImpl implements CartService {
                 })
                 .collect(Collectors.toList());
 
+        List<ShippingMethod> shippingMethods = shippingMethodRepo.findAll();
+        System.out.println(shippingMethods.get(0).getPrice());
         CartDTO cartDTO = new CartDTO();
 
         cartDTO.setCartId(userCart.getId());
         cartDTO.setUserId(user.getId());
         cartDTO.setStatus(userCart.getStatus());
         cartDTO.setMerchandiseTotal(merchandiseTotal.get()); // Get the totalFee value from AtomicReference
+        cartDTO.setTotal(merchandiseTotal.get().add(BigDecimal.valueOf(10)));
         cartDTO.setItems(cartDetailDTOs);
 
         return cartDTO;

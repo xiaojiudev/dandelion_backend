@@ -21,6 +21,7 @@ public class CartDTO {
     @JsonProperty("merchandise_total")
     private BigDecimal merchandiseTotal;
     private BigDecimal shippingFee;
+    private BigDecimal total;
     private List<CartDetailDTO> items;
 
 }
